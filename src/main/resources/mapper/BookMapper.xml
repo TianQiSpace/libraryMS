@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianqi.libraryms.mapper.BookMapper">
+    <resultMap id="BaseResultMap"
+               type="com.tianqi.libraryms.entity.Book">
+        <id property="bookId" column="book_id" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="author" column="author" jdbcType="VARCHAR"/>
+        <result property="isbn" column="isbn" jdbcType="VARCHAR"/>
+        <result property="publishDate" column="publish_date"
+                jdbcType="DATE"/>
+        <result property="publisherId" column="publisher_id"
+                jdbcType="INTEGER"/>
+        <result property="categoryId" column="category_id"
+                jdbcType="INTEGER"/>
+        <result property="summary" column="summary"
+                jdbcType="VARCHAR"/>
+        <result property="coverImageUrl" column="cover_image_url"
+                jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createdAt" column="created_at"
+                jdbcType="TIMESTAMP"/>
+        <result property="updatedAt" column="updated_at"
+                jdbcType="TIMESTAMP"/>
+        <result property="quantity" column="quantity" jdbcType="INTEGER"/>
+        <result property="malePoint" column="male_point" jdbcType="INTEGER"/>
+        <result property="femalePoint" column="female_point" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        book_id,title,author,
+        isbn,publish_date,publisher_id,
+        category_id,summary,cover_image_url,
+        status,created_at,updated_at,quantity,malePoint,femalePoint
+    </sql>
+</mapper>

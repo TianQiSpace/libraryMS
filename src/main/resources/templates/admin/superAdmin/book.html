@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"
+          content="text/html; charset=UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>书籍管理</title>
+    <link rel="stylesheet" type="text/css"
+          href="/css/jquery.pagination.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="/assets/css/bootstrap.css"/>
+    <!-- 引入 marked.js -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="/css/bootstrap-responsive.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/js/ckform.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript"
+            src="/js/jquery.pagination.min.js"></script>
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 th:if="${error}">[[${error}]]</h2>
+    <table class="table table-bordered table-hover definewidth m10" th:if="${not #lists.isEmpty(books)}">
+        <thead>
+        <tr>
+            <th>封面标识</th>
+            <th>书籍名称</th>
+            <th>书籍作者</th>
+            <th>ISBN标识</th>
+            <th>出版社ID</th>
+            <th>出版日期</th>
+            <th>分类序列</th>
+            <th>书籍简介</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${books}">
+            <td>
+                <img th:src="${book.coverImageUrl}" style="max-width: 50px;" alt="书籍封面"/>
+            </td>
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.author}"></td>
+            <td th:text="${book.isbn}"></td>
+            <td th:text="${book.publisherId}"></td>
+            <td th:text="${#dates.format(book.publishDate, 'yyyy-MM-dd')}"></td>
+            <td th:text="${book.categoryId}"></td>
+            <td th:text="${book.summary}"></td>
+            <td>
+                <!-- 操作按钮 -->
+                <!-- 触发模态框的链接 -->
+                <a class="btn btn-primary" th:href="@{/books/getMessageToEdit/{id}(id=${book.bookId})}" data-toggle="modal" data-target="#editBookModal">编辑</a>
+                <a class="btn btn-danger" th:href="@{/books/showOne/{id}(id=${book.bookId})}" data-toggle="modal" data-target="#viewBookModal">查看</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${#lists.isEmpty(books)}">没有找到任何书籍。</p>
+</div>
+<!-- 编辑书籍模态框 -->
+<div class="modal fade" id="editBookModal" tabindex="-1" role="dialog" aria-labelledby="editBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editBookModalLabel">更新书籍</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form th:action="@{/books/updateOne}" method="post" th:object="${book}">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="title">书名</label>
+                        <input type="text" class="form-control" id="title" th:field="*{title}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="author">作者</label>
+                        <input type="text" class="form-control" id="author" th:field="*{author}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="coverImageUrl">封面</label>
+                        <textarea class="form-control" id="coverImageUrl" th:field="*{coverImageUrl}"></textarea>
+                    </div>
+                    <!-- 更多字段... -->
+                    <div class="form-group">
+                        <label for="summary">简介</label>
+                        <textarea class="form-control" id="summary" th:field="*{summary}"></textarea>
+                    </div>
+                    <!-- 其他不允许修改的字段可以隐藏或者不显示 -->
+                    <input type="hidden" th:field="*{bookId}"/>
+                    <input type="hidden" th:field="*{isbn}"/>
+                    <input type="hidden" th:field="*{publisherId}"/>
+                    <input type="hidden" th:field="*{categoryId}"/>
+                    <input type="hidden" th:field="*{createdAt}"/>
+                    <input type="hidden" th:field="*{updatedAt}"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">保存更改</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- 查看书籍详情的模态框 -->
+<div class="modal fade" id="viewBookModal" tabindex="-1" role="dialog" aria-labelledby="viewBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewBookModalLabel">书籍详情</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img th:src="${book.coverImageUrl}" alt="书籍封面" class="img-fluid" />
+                    </div>
+                    <div class="col-md-8">
+                        <h4 th:text="${book.title}"></h4>
+                        <p><strong>作者:</strong> <span th:text="${book.author}"></span></p>
+                        <p><strong>ISBN:</strong> <span th:text="${book.isbn}"></span></p>
+                        <p><strong>出版日期:</strong> <span th:text="${#dates.format(book.publishDate, 'yyyy-MM-dd')}"></span></p>
+                        <p><strong>出版社ID:</strong> <span th:text="${book.publisherId}"></span></p>
+                        <p><strong>分类ID:</strong> <span th:text="${book.categoryId}"></span></p>
+                        <p><strong>简介:</strong> <span th:text="${book.summary}"></span></p>
+                        <p><strong>状态:</strong> <span th:text="${book.status}"></span></p>
+                        <p><strong>创建时间:</strong> <span th:text="${#dates.format(book.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+                        <p><strong>更新时间:</strong> <span th:text="${#dates.format(book.updatedAt, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+                        <p><strong>库存数量:</strong> <span th:text="${book.quantity}"></span></p>
+                    </div>
+                </div>
+                <hr>
+                <div id="bookContentArea">
+                    <h5>书籍内容</h5>
+                    <div id="bookContent" th:utext="${bookFile}"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 添加处理不同格式内容的脚本 -->
+<script>
+    $(document).ready(function() {
+        // 当模态框显示时加载书籍详情
+        $('#viewBookModal').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget); // 触发事件的按钮
+            const bookId = button.data('book-id'); // 从按钮数据属性获取书籍ID
+            const modal = $(this);
+
+            // 使用AJAX请求获取书籍详情
+            $.ajax({
+                url: '/api/books/showOne/' + bookId,
+                method: 'GET',
+                success: function(data) {
+                    // 填充模态框中的数据
+                    modal.find('.modal-title').text(data.book.title);
+                    modal.find('img').attr('src', data.book.coverImageUrl);
+                    modal.find('[th:text="${book.title}"]').text(data.book.title);
+                    modal.find('[th:text="${book.author}"]').text(data.book.author);
+                    modal.find('[th:text="${book.isbn}"]').text(data.book.isbn);
+                    modal.find('[th:text="${#dates.format(book.publishDate, \'yyyy-MM-dd\')}"]').text(new Date(data.book.publishDate).toLocaleDateString());
+                    modal.find('[th:text="${book.publisherId}"]').text(data.book.publisherId);
+                    modal.find('[th:text="${book.categoryId}"]').text(data.book.categoryId);
+                    modal.find('[th:text="${book.summary}"]').text(data.book.summary);
+                    modal.find('[th:text="${book.status}"]').text(data.book.status);
+                    modal.find('[th:text="${#dates.format(book.createdAt, \'yyyy-MM-dd HH:mm:ss\')}"]').text(new Date(data.book.createdAt).toLocaleString());
+                    modal.find('[th:text="${#dates.format(book.updatedAt, \'yyyy-MM-dd HH:mm:ss\')}"]').text(new Date(data.book.updatedAt).toLocaleString());
+                    modal.find('[th:text="${bookStock.quantity}"]').text(data.book.quantity);
+
+                    // 根据内容类型决定如何显示
+                    if (data.bookStock.contentPath) {
+                        const contentPath = data.bookStock.contentPath;
+                        if (contentPath.endsWith('.pdf')) {
+                            // 如果是PDF，可以使用嵌入式PDF阅读器
+                            modal.find('#bookContentArea').html('<iframe src="/api/books/content/' + bookId + '" width="100%" height="500px"></iframe>');
+                        } else if (contentPath.endsWith('.md')) {
+                            // 如果是Markdown，可以使用JavaScript库（如marked.js）进行渲染
+                            fetch('/api/books/content/' + bookId)
+                                .then(response => response.text())
+                                .then(text => {
+                                    const marked = require('marked');
+                                    const content = marked.parse(text);
+                                    modal.find('#bookContent').html(content);
+                                });
+                        } else {
+                            // 如果是纯文本或HTML，直接显示
+                            fetch('/api/books/content/' + bookId)
+                                .then(response => response.text())
+                                .then(text => {
+                                    modal.find('#bookContent').html(text);
+                                });
+                        }
+                    }
+                },
+                error: function() {
+                    alert('无法加载书籍详情，请稍后再试！');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

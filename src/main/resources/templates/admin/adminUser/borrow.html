@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>图书处理中心</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <style>
+        /* 通用样式 */
+        body {
+            font-family: '宋体', 'Helvetica Neue', Helvetica, sans-serif; /* 使用常见的网页字体 */
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #fef4ea, #eff7f2); /* 从左到右的渐变背景 */
+        }
+
+        /*--------------------------------------------------*/
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .15) !important;
+            transition: all 0.3s ease-in-out;
+            margin-bottom: 20px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 1rem 2rem rgba(0, 0, 0, .25) !important;
+        }
+
+        .card-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .status-text {
+            font-weight: bold;
+        }
+
+        /*---------------------------------------------------*/
+        /* 设置footer的样式 */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: white;
+            color: #666; /* 使用较淡的颜色 */
+            text-align: center;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            border-radius: 15px 15px 0 0; /* 圆角边框 */
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+            font-family: Arial, sans-serif;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5; /* 增加行间距 */
+        }
+
+        .footer a {
+            color: #007bff; /* 使用蓝色链接颜色 */
+            text-decoration: none;
+            transition: color 0.3s ease; /* 平滑过渡效果 */
+        }
+
+        .footer a:hover {
+            color: #0056b3; /* 鼠标悬停时颜色变深 */
+        }
+
+        .footer img {
+            vertical-align: middle;
+            margin-right: 5px;
+            max-width: 16px;
+            max-height: 16px;
+        }
+
+        /* 头部样式 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid #ddd;
+            border-radius: 15px 15px 0 0;
+            background: linear-gradient(to right, #eff7f2, #aeaffb); /* 从左到右的渐变背景 */
+        }
+
+        .header-left,
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-left > * {
+            margin-right: 10px; /* 调整这个值以改变返回图标与标题之间的距离 */
+        }
+
+        .header-right > * {
+            margin-left: 10px; /* 调整这个值以改变刷新按钮与一键已读图标之间的距离 */
+        }
+
+
+        .return-link {
+            display: flex;
+            align-items: center;
+        }
+
+        .return-icon {
+            width: 24px;
+        }
+
+        /*------------------------------------------------*/
+        .returned-card {
+            background-color: #f8f9fa; /* 灰色背景 */
+            color: #6c757d; /* 灰色文字 */
+        }
+
+        .returned-card .card-body {
+            color: #6c757d; /* 灰色文字 */
+        }
+
+        .returned-card .btn-secondary.disabled {
+            background-color: #6c757d; /* 灰色按钮 */
+            border-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        /*-------------------------------*/
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="header">
+        <div class="header-left">
+            <a href="/admin/adminUser/index" title="返回主页"
+               class="return-link">
+                <img src="/images/icon/返回图标.png" alt="返回"
+                     class="return-icon">
+            </a>
+            <h2 class="mb-0">申请处理</h2>
+        </div>
+        <div class="header-right">
+            <button type="button" class="btn btn-primary mr-2"
+                    onclick="location.reload()">刷新页面
+            </button>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <div id="notifications" class="row">
+            <div th:each="BorrowinghandlingVO : ${allBorrowinghandlingVOList}"
+                 class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <p>📄 申请类型: <span
+                                th:text="${BorrowinghandlingVO.getType()}"></span>
+                        </p>
+                        <p>📅 申请对象: <span
+                                th:text="${BorrowinghandlingVO.getUserName()}"></span>
+                        </p>
+                        <p>🔄 相关书籍: <span
+                                th:text="${BorrowinghandlingVO.getTitle()}"></span>
+                        </p>
+                        <p>🔍 ID: <span
+                                th:text="${BorrowinghandlingVO.getId()}"></span>
+                        </p> <!-- 调试信息 -->
+                        <div class="d-flex justify-content-end">
+                            <button type="button"
+                                    class="btn btn-success handle-btn"
+                                    th:data-id="${BorrowinghandlingVO.getId()}"
+                                    th:data-action="'通过'">通过
+                            </button>
+                            <button type="button"
+                                    class="btn btn-danger handle-btn"
+                                    th:data-id="${BorrowinghandlingVO.getId()}"
+                                    th:data-action="'驳回'"
+                                    style="margin-left: 10px;">驳回
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <footer class="footer">
+        <p>© 2024 By 云借阅图书管理系统</p>
+        <p>Powered by <a>TianQi</a> | 🌈 Theme by <a>天启</a></p>
+    </footer>
+</div>
+
+
+<script src="/assets/js/bootstrap.bundle.js"></script>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.handle-btn').click(function () {
+            const id = $(this).data('id');
+            const action = $(this).data('action');
+
+            console.log('ID:', id); // 调试输出ID
+            console.log('Action:', action); // 调试输出Action
+            if (id === null || id === undefined) {
+                alert('ID 为空或未定义，请检查数据绑定。');
+                return;
+            }
+            $.ajax({
+                url: '/admin/borrowRecord/manage',
+                type: 'POST',
+                data: {id: id, action: action}, // 使用表单数据格式
+                success: function (response) {
+                    if (response.success) {
+                        // 更新按钮颜色和其他UI元素
+                        $(this).closest('.card').addClass('handled-card');
+                        //移除驳回按钮
+                        $(this).closest('.card').find('.btn-danger').remove();
+                        $(this).removeClass('btn-success btn-danger').addClass('btn-secondary disabled').text('已' + action);
+                        alert(action === '通过' ? '通过成功: ' + response.message : '驳回成功: ' + response.message);
+                    } else {
+                        alert(action === '通过' ? '通过失败: ' + response.message : '驳回失败: ' + response.message);
+                    }
+                }.bind(this),
+                error: function () {
+                    alert('请求失败，请稍后再试。');
+                }
+            });
+        });
+    });
+    setInterval(function () {
+        location.reload();
+    }, 60000);
+</script>
+</body>
+</html>

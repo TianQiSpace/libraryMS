@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianqi.libraryms.mapper.BorrowinghandlingMapper">
+
+    <resultMap id="BaseResultMap" type="com.tianqi.libraryms.entity.Borrowinghandling">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="bookId" column="book_id" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 定义 resultMap 来映射结果集到 BorrowinghandlingVO -->
+    <resultMap id="BorrowinghandlingVOResultMap" type="com.tianqi.libraryms.entity.JavaBean.BorrowinghandlingVO">
+        <id property="type" column="type"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="bookId" column="book_id"/>
+        <result property="title" column="title"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,type,user_id,
+        book_id,status
+    </sql>
+    <!-- 多表关联查询 -->
+    <select id="selectAllBorrowRecord" parameterType="map" resultMap="BorrowinghandlingVOResultMap">
+        SELECT
+            bh.id,
+            bh.type,
+            nu.id AS user_id,
+            nu.username AS user_name,
+            b.book_id,
+            b.title
+        FROM
+            borrowinghandling bh
+        JOIN
+            normal_user nu ON bh.user_id = nu.id
+        JOIN
+            book b ON bh.book_id = b.book_id
+        WHERE
+            bh.user_id = #{userId} AND bh.book_id = #{bookId}
+    </select>
+</mapper>

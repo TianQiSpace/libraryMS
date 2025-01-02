@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <title>云借阅图书管理系统 - 登录页面</title>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/css/util.css">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
+    <!--设置背景图片-->
+    <style>
+        body {
+            font-family: '宋体', 'Helvetica Neue', Helvetica, sans-serif; /* 使用常见的网页字体 */
+            background-image: url(/images/backimage.jpg);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+        }
+    </style>
+    <style>
+        /* 设置字体为宋体 */
+        body {
+            font-family: "KaiTi", "楷体", sans-serif;
+        }
+        /* 减小提示信息的字体大小 */
+        .error-message {
+            color: red;
+            font-size: 12px;
+            display: none;
+        }
+    </style>
+</head>
+<body><div class="container">
+    <div class="wrap-login">
+        <div class="wrap-form-title"
+             style="background-image: url(/images/backimage.jpg);">
+            <span class="form-title">云借阅图书管理系统 - 登录</span>
+        </div>
+        <form action="/normalUser/login"
+              class="login-form validate-form" method="post"
+              id="loginForm">
+            <div class="wrap-input validate-input m-b-26"
+                 data-validate="用户名不能为空">
+                <span class="label-input">用户名:</span>
+                <input class="input" type="text" id="username"
+                       name="username" placeholder="请输入4-20位用户名">
+                <span class="focus-input"></span>
+                <span class="error-message"
+                      id="usernameError">用户名不能为空</span>
+            </div>
+            <div class="wrap-input validate-input m-b-18"
+                 data-validate="密码不能为空">
+                <span class="label-input">密&nbsp;&nbsp;&nbsp;&nbsp;码:</span>
+                <input class="input" type="password" id="password"
+                       name="password" placeholder="请输入8位密码">
+                <span class="focus-input"></span>
+                <span class="error-message"
+                      id="passwordError">密码不能为空</span>
+                <span class="error-message" id="passwordLengthError">密码必须为8位字符</span>
+            </div>
+
+            <div class="flex-sb-m w-full p-b-30">
+                <div>
+                    <a href="/normalUser/registerPage" class="txt1" methods="POST">注册</a>
+                </div>
+                <div>
+                    <a href="/admin/login" class="txt1">管理员账户</a>
+                </div>
+            </div>
+
+            <div class="wrapper-form-btn">
+                <button class="login-form-btn" type="submit">登 录
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        // 表单提交事件
+        $('#loginForm').on('submit', function (event) {
+            event.preventDefault(); // 阻止表单默认提交行为
+
+            // 隐藏所有错误信息
+            $('.error-message').hide();
+
+            // 获取输入值
+            const username = $('#username').val();
+            const password = $('#password').val();
+
+            // 验证用户名
+            if (username.trim() === '') {
+                $('#usernameError').show();
+                return;
+            }
+
+            // 验证密码
+            if (password.trim() === '') {
+                $('#passwordError').show();
+                return;
+            }
+
+            // 验证密码长度
+            if (password.length !== 8) {
+                $('#passwordLengthError').show();
+                return;
+            }
+
+            // 使用 AJAX 发送请求
+            $.ajax({
+                url: '/normalUser/login',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ username: username, password: password }),
+                success: function (response) {
+                    if (response.success) {
+                        alert('登录成功！');
+                        // 登录成功，跳转到主页或其他页面
+                        window.location.href = '/normalUser/index';
+                    } else {
+                        // 登录失败，显示错误信息
+                        alert('登录失败: ' + response.message);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    // 处理请求错误
+                    alert('服务器内部错误: ' + textStatus);
+                }
+            });
+        });
+
+        // 输入框聚焦时隐藏错误信息
+        $('#username, #password').on('focus', function () {
+            $(this).nextAll('.error-message').hide();
+        });
+    });
+</script>
+</body>
+</html>

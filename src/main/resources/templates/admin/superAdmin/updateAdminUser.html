@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>管理员信息更新</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/jquery.sorted.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/js/ckform.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <style>
+        /* 通用样式 */
+        body {
+            font-family: '宋体', 'Helvetica Neue', Helvetica, sans-serif; /* 使用常见的网页字体 */
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #fef4ea, #eff7f2); /* 从左到右的渐变背景 */
+
+        }
+
+        /*-----------------------------------------------*/
+        /* 设置nav-link的样式 */
+        .nav-link {
+            color: #007bff;
+        }
+
+        /* 设置nav-link激活时的样式 */
+        .nav-link.active {
+            color: #0056b3;
+            font-weight: bold;
+        }
+
+        .navbar-nav {
+            display: flex;
+            justify-content: space-between;
+            width: 100%; /* 确保导航栏占满整个宽度 */
+        }
+
+        .nav-item.ms-auto {
+            margin-left: auto; /* 将搜索栏推到最右边 */
+        }
+
+        /* 设置dl-log-user的样式 */
+        .dl-log-user {
+            font-weight: bold;
+        }
+
+        .dl-title-text {
+            color: #4c4948; /* 设置文字颜色为黑色 */
+            font-family: '宋体', sans-serif; /* 选择一种优雅的字体 */
+            font-size: 25px; /* 调整字体大小 */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* 添加轻微的阴影效果 */
+            letter-spacing: 2px; /* 字母间距 */
+            line-height: 1.2; /* 行高 */
+        }
+
+        .zdy {
+            color: #666666; /* 设置文字颜色为黑色 */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* 添加轻微的阴影效果 */
+        }
+
+        /*----------------------------------------------*/
+        .form-inline {
+            display: flex;
+            align-items: center; /* 垂直居中对齐 */
+        }
+
+        .form-control {
+            flex: 1; /* 使输入框占据剩余空间 */
+        }
+
+        .btn {
+            margin-left: 5px; /* 可选：为按钮添加一些左边距 */
+        }
+
+        /*-----------------------------------------------*/
+        /* 设置card的样式 */
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            height: 100%; /* 卡片高度占满其父容器 */
+            font-family: '宋体', sans-serif; /* 选择一种优雅的字体 */
+        }
+
+        /* 设置card悬浮时的样式 */
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -10px; /* 与 .mb-3 和 .col-md-4 的边距相抵消 */
+            color: #f7f6f2;
+        }
+
+        .card-container > div {
+            padding: 10px; /* 与 .mb-3 和 .col-md-4 的边距相抵消 */
+        }
+
+        /* 设置card-header的样式 */
+        .card-header {
+            color: white;
+            font-weight: bold; /* 加粗字体 */
+        }
+
+        /* 设置card-body的样式 */
+        .card-body {
+            color: #f7f6f2;
+            padding: 1.5rem;
+            flex: 1 0 auto; /* 让 .card-body 可以扩展 */
+        }
+
+        .featured-book {
+            margin-bottom: 1rem;
+        }
+
+        .book-cover {
+            width: 50px; /* 你可以根据需要调整大小 */
+            height: auto;
+            border-radius: 5px;
+        }
+
+        /*----------------------------------------------*/
+        /* 自定义列表项样式 */
+        .custom-list-item {
+            border-radius: 15px; /* 圆角边框 */
+            padding: 10px;
+            margin-bottom: 3px; /* 列表项之间的间距 */
+            background-color: #fff; /* 背景颜色 */
+            border: 1px solid #e0e0e0; /* 边框颜色 */
+            transition: all 0.3s ease; /* 平滑过渡效果 */
+            font-family: '宋体', 'Helvetica Neue', Helvetica, sans-serif;
+            text-align: left;
+        }
+
+        .custom-list-item:hover {
+            background-color: #f0f0f0; /* 鼠标悬停时背景颜色变化 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 悬停时添加阴影 */
+        }
+
+        /*---------------------------------------------------------*/
+        /* 设置footer的样式 */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 70%;
+            background-color: white;
+            color: #666; /* 使用较淡的颜色 */
+            text-align: center;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            border-radius: 15px 15px 0 0; /* 圆角边框 */
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+            font-family: 'Arial', sans-serif; /* 选择一种优雅的字体 */
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5; /* 增加行间距 */
+        }
+
+        .footer a {
+            color: #007bff; /* 使用蓝色链接颜色 */
+            text-decoration: none;
+            transition: color 0.3s ease; /* 平滑过渡效果 */
+        }
+
+        .footer a:hover {
+            color: #0056b3; /* 鼠标悬停时颜色变深 */
+        }
+
+        .footer img {
+            vertical-align: middle;
+            margin-right: 5px;
+            max-width: 16px;
+            max-height: 16px;
+        }
+
+        /*------------------------------------------------*/
+
+        /* 最后一个退出图标与容器边框的距离 */
+        .message-link:last-child .message-icon {
+            margin-right: 17px; /* 设置退出图标与容器右边框的距离 */
+        }
+
+        .d-flex {
+            display: flex;
+            align-items: center; /* 垂直居中对齐 */
+            padding: 0 10px; /* 左右内边距，可以根据需要调整 */
+        }
+
+        /* 元素间的间距 */
+        .me-2,
+        .ms-2 {
+            margin-right: 10px; /* 右边距 */
+            margin-left: 10px; /* 左边距 */
+        }
+
+        .dl-log-user,
+        .message-link:last-child {
+            margin-right: 8px; /* 调整元素间的距离 */
+        }
+
+        /*-------------------------*/
+        /* 自定义下拉菜单项的宽度 */
+        .dropdown-menu .dropdown-item {
+            width: 150px; /* 根据需要调整宽度 */
+            padding: 0.25rem 1rem; /* 可选：调整内边距以适应新的宽度 */
+        }
+    </style>
+</head>
+<body>
+<form action="/superAdmin/adminUserUpdate" method="post" class="definewidth m20">
+    <table class="table table-bordered table-hover definewidth m10">
+        <tr>
+            <td class="tableleft">用户ID</td>
+            <td><input type="text" name="id" readonly th:value="${adminUser.getId()}"/></td>
+        </tr>
+        <tr>
+            <td class="tableleft">用户账号</td>
+            <td><input type="text" name="username" th:value="${adminUser.getUsername()}"/></td>
+        </tr>
+        <tr>
+            <td class="tableleft">用户权限</td>
+            <td><input type="text" name="role" readonly th:value="${adminUser.getRole()}"/></td>
+        </tr>
+        <tr>
+            <td class="tableleft">账户邮箱</td>
+            <td><input type="text" name="email" th:value="${adminUser.getEmail()}"/></td>
+        </tr>
+        <tr>
+            <td class="tableleft"></td>
+            <td>
+                <button type="submit" class="btn btn-primary">修改</button> &nbsp;&nbsp;<a type="button" class="btn btn-success" name="backid" id="backid" href="/superAdmin/adminUserManageIndex">返回</a>
+            </td>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
+<script>
+</script>

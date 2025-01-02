@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianqi.libraryms.mapper.BorrowRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.tianqi.libraryms.entity.BorrowRecord">
+            <id property="recordId" column="record_id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="bookId" column="book_id" jdbcType="INTEGER"/>
+            <result property="bookTitle" column="book_title" jdbcType="VARCHAR"/>
+            <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+            <result property="borrowDate" column="borrow_date" jdbcType="DATE"/>
+            <result property="returnDate" column="return_date" jdbcType="DATE"/>
+            <result property="dueDate" column="due_date" jdbcType="DATE"/>
+            <result property="borrowStatus" column="borrow_status" jdbcType="INTEGER"/>
+            <result property="borrowStatusText" column="borrow_status_text" jdbcType="OTHER"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        record_id,user_id,book_id,
+        book_title,category_id,borrow_date,
+        return_date,due_date,borrow_status,
+        borrow_status_text,created_at,updated_at
+    </sql>
+</mapper>

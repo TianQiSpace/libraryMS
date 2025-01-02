@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- 设置文档字符编码为UTF-8 -->
+    <meta charset="UTF-8">
+    <!-- 优化移动设备显示效果 -->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <!-- 网页标题 -->
+    <title>云借阅图书管理系统-超级管理员</title>
+    <!-- 引入MDB框架的CSS文件 -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css">
+    <!-- 引入Bootstrap框架的CSS文件 -->
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/js/bootstrap.bundle.js">
+    <!-- 引入自定义的CSS文件 -->
+    <link rel="stylesheet" href="/css/custom.css">
+    <!-- 内联CSS样式 -->
+    <style>
+        /* 通用样式 */
+        body {
+            font-family: '宋体', 'Helvetica Neue', Helvetica, sans-serif; /* 使用常见的网页字体 */
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #fef4ea, #eff7f2); /* 从左到右的渐变背景 */
+
+        }
+
+        /*-----------------------------------------------*/
+        /* 设置nav-link的样式 */
+        .nav-link {
+            color: #007bff;
+        }
+
+        /* 设置nav-link激活时的样式 */
+        .nav-link.active {
+            color: #0056b3;
+            font-weight: bold;
+        }
+
+        .navbar-nav {
+            display: flex;
+            justify-content: space-between;
+            width: 100%; /* 确保导航栏占满整个宽度 */
+        }
+        /* 设置dl-log-user的样式 */
+        .dl-log-user {
+            font-weight: bold;
+        }
+
+        .dl-title-text {
+            color: #4c4948; /* 设置文字颜色为黑色 */
+            font-family: '宋体', sans-serif; /* 选择一种优雅的字体 */
+            font-size: 25px; /* 调整字体大小 */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* 添加轻微的阴影效果 */
+            letter-spacing: 2px; /* 字母间距 */
+            line-height: 1.2; /* 行高 */
+        }
+
+        .zdy {
+            color: #666666; /* 设置文字颜色为黑色 */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* 添加轻微的阴影效果 */
+        }
+
+        /* 设置card的样式 */
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            height: 100%; /* 卡片高度占满其父容器 */
+            font-family: '宋体', sans-serif; /* 选择一种优雅的字体 */
+        }
+
+        /* 设置card悬浮时的样式 */
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -10px; /* 与 .mb-3 和 .col-md-4 的边距相抵消 */
+            color: #f7f6f2;
+        }
+
+        .card-container > div {
+            padding: 10px; /* 与 .mb-3 和 .col-md-4 的边距相抵消 */
+        }
+
+        /* 设置card-header的样式 */
+        .card-header {
+            color: white;
+            font-weight: bold; /* 加粗字体 */
+        }
+
+        /* 设置card-body的样式 */
+        .card-body {
+            color: #f7f6f2;
+            padding: 1.5rem;
+            flex: 1 0 auto; /* 让 .card-body 可以扩展 */
+        }
+
+        /*----------------------------------------------*/
+        /* 自定义列表项样式 */
+        .custom-list-item {
+            border-radius: 15px; /* 圆角边框 */
+            padding: 10px;
+            margin-bottom: 3px; /* 列表项之间的间距 */
+            background-color: #fff; /* 背景颜色 */
+            border: 1px solid #e0e0e0; /* 边框颜色 */
+            transition: all 0.3s ease; /* 平滑过渡效果 */
+            font-family: '宋体', 'Helvetica Neue', Helvetica, sans-serif;
+            text-align: left;
+        }
+
+        .custom-list-item:hover {
+            background-color: #f0f0f0; /* 鼠标悬停时背景颜色变化 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 悬停时添加阴影 */
+        }
+
+        /*---------------------------------------------------------*/
+        /* 设置footer的样式 */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: white;
+            color: #666; /* 使用较淡的颜色 */
+            text-align: center;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            border-radius: 15px 15px 0 0; /* 圆角边框 */
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+            font-family: 'Arial', sans-serif; /* 选择一种优雅的字体 */
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5; /* 增加行间距 */
+        }
+
+        .footer a {
+            color: #007bff; /* 使用蓝色链接颜色 */
+            text-decoration: none;
+            transition: color 0.3s ease; /* 平滑过渡效果 */
+        }
+
+        .footer a:hover {
+            color: #0056b3; /* 鼠标悬停时颜色变深 */
+        }
+
+        .footer img {
+            vertical-align: middle;
+            margin-right: 5px;
+            max-width: 16px;
+            max-height: 16px;
+        }
+
+        /*------------------------------------------------*/
+
+        /* 最后一个退出图标与容器边框的距离 */
+        .message-link:last-child .message-icon {
+            margin-right: 17px; /* 设置退出图标与容器右边框的距离 */
+        }
+
+        .d-flex {
+            display: flex;
+            align-items: center; /* 垂直居中对齐 */
+            padding: 0 10px; /* 左右内边距，可以根据需要调整 */
+        }
+
+        /* 元素间的间距 */
+        .me-2,
+        .ms-2 {
+            margin-right: 10px; /* 右边距 */
+            margin-left: 10px; /* 左边距 */
+        }
+
+        .dl-log-user,
+        .message-link:last-child {
+            margin-right: 8px; /* 调整元素间的距离 */
+        }
+
+        /*-------------------------*/
+        /* 自定义下拉菜单项的宽度 */
+        .dropdown-menu .dropdown-item {
+            width: 150px; /* 根据需要调整宽度 */
+            padding: 0.25rem 1rem; /* 可选：调整内边距以适应新的宽度 */
+        }
+    </style>
+
+</head>
+<body>
+<div class="container">
+    <!-- 头部区域 -->
+    <header class="header d-flex justify-content-between align-items-center mb-3">
+        <!-- 系统标题和logo -->
+        <div class="dl-title">
+            <img src="/images/icon/书籍.png" alt="Logo"
+                 style="height: 50px;">
+            <span class="dl-title-text">云借阅图书管理系统</span>
+        </div>
+
+        <div class="d-flex align-items-center zdy">
+            <span class="me-2">欢迎👤: </span>
+            <span class="dl-log-user"
+                  th:text="${session.superAdminUserLoginStatus.getUsername()}"></span>
+
+            <span class="ms-2">
+         <a href="#" id="logoutLink" title="退出系统" class="message-link">
+            <img src="/images/icon/学院－登出.png" style="width: 30px;"
+                 alt="登出" class="message-icon">
+          </a>
+           </span>
+
+        </div>
+    </header>
+
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+        <div class="container-fluid">
+            <!-- 菜单按钮 -->
+            <button class="navbar-toggler" type="button"
+                    data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- 导航链接 -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav flex-row w-100 justify-content-between">
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:classappend="${#strings.equalsIgnoreCase(currentPage, 'recommend')} ? 'active'"
+                           href="/bookCategory/superAdmin/indexSearch">分类管理🏷️</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link"
+                           th:classappend="${#strings.equalsIgnoreCase(currentPage, 'ranking')} ? 'active'"
+                           href="/superAdmin/publisherManage">
+                            出版社管理🏢
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:classappend="${#strings.equalsIgnoreCase(currentPage, 'borrowback')} ? 'active'"
+                           href="/superAdmin/adminUserManageIndex">管理员账户管理📥</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- 主要内容区域 -->
+    <main class="content">
+        <div class="row card-container">
+            <!-- 热门书籍卡片 -->
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-header">分类概览📋</div>
+                    <div class="card-body">
+                        <ul class="list-group"
+                            th:each="Category : ${allBookCategory}">
+                            <li class="list-group-item custom-list-item">
+                                <p>🏷️ 分类名称: <span
+                                        th:text="${Category.getCategoryName()}"></span>
+                                </p>
+                                <p>📜 分类描述: <span
+                                        th:text="${Category.getDescription()}"></span>
+                                </p>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- 借阅记录卡片 -->
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-header">出版社信息</div>
+                    <div class="card-body">
+                        <ul class="list-group"
+                            th:each="publisher : ${allPublisher}">
+                            <li class="list-group-item custom-list-item">
+                                <p>📋 记录名称: <span
+                                        th:text="${publisher.getPublisherName()}"></span>
+                                </p>
+                                <p>📞 联系电话: <span
+                                        th:text="${publisher.getContactPhone()}"></span>
+                                </p>
+                                <p> 🗺️详细地址: <span
+                                        th:text="${publisher.getAddress()}"></span>
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- 热门书籍卡片 -->
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-header">管理员列表</div>
+                    <div class="card-body">
+                        <!-- 特写书籍 -->
+                        <ul class="list-group ">
+                            <li class="list-group-item custom-list-item"
+                                th:each="adminUser : ${allAdminUser}">
+                                <p>📄 账户名: <span
+                                        th:text="${adminUser.getUsername()}"></span>
+                                </p>
+                                <p>📮 邮箱: <span
+                                        th:text="${adminUser.getEmail()}"></span>
+                                </p>
+                                <p>🛡 有效状态: <span
+                                        th:text="${adminUser.getStatus()==1? '封禁🛑' : '正常🟢'}"></span>
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div>
+        <footer class="footer">
+            <p>© 2024 By 云借阅图书管理系统</p>
+            <p>Powered by <a>TianQi</a> | 🌈 Theme by <a>天启</a></p>
+        </footer>
+    </div>
+
+</div>
+<!-- 引入jQuery库 -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<!-- 引入Popper库 -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<!-- 引入Bootstrap框架的JS文件 -->
+<script src="/assets/js/bootstrap.min.js"></script>
+<!-- 引入MDB框架的JS文件 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+<!-- 引入自定义的JS文件 -->
+<script src="/static/js/main2.js"></script>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // 退出系统的点击事件
+        $('#logoutLink').on('click', function (event) {
+            event.preventDefault(); // 阻止默认行为
+
+            // 使用 AJAX 发送请求
+            $.ajax({
+                url: '/admin/superAdmin/logout',
+                method: 'POST',
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response.success) {
+                        alert('退出成功！');
+                        // 退出成功，跳转到登录页面或其他页面
+                        window.location.href = '/admin/login';
+                    } else {
+                        // 退出失败，显示错误信息
+                        alert('退出失败: ' + response.message);
+                    }
+                },
+                error: function (jqXHR, textStatus) {
+                    // 处理请求错误
+                    alert('服务器内部错误: ' + textStatus);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

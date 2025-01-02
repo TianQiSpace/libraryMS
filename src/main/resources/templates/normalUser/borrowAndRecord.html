@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>借阅归还</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <style>
+        /* 通用样式 */
+        body {
+            font-family: '宋体', 'Helvetica Neue', Helvetica, sans-serif; /* 使用常见的网页字体 */
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #fef4ea, #eff7f2); /* 从左到右的渐变背景 */
+        }
+
+        /*--------------------------------------------------*/
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15)!important;
+            transition: all 0.3s ease-in-out;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 1rem 2rem rgba(0,0,0,.25)!important;
+        }
+        .card-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+        .status-text {
+            font-weight: bold;
+        }
+        /*---------------------------------------------------*/
+        /* 设置footer的样式 */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: white;
+            color: #666; /* 使用较淡的颜色 */
+            text-align: center;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            border-radius: 15px 15px 0 0; /* 圆角边框 */
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+            font-family: Arial, sans-serif;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5; /* 增加行间距 */
+        }
+
+        .footer a {
+            color: #007bff; /* 使用蓝色链接颜色 */
+            text-decoration: none;
+            transition: color 0.3s ease; /* 平滑过渡效果 */
+        }
+
+        .footer a:hover {
+            color: #0056b3; /* 鼠标悬停时颜色变深 */
+        }
+
+        .footer img {
+            vertical-align: middle;
+            margin-right: 5px;
+            max-width: 16px;
+            max-height: 16px;
+        }
+
+        /* 头部样式 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid #ddd;
+            border-radius: 15px 15px 0 0;
+            background: linear-gradient(to right,  #eff7f2,#aeaffb); /* 从左到右的渐变背景 */
+        }
+
+        .header-left,
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-left > * {
+            margin-right: 10px; /* 调整这个值以改变返回图标与标题之间的距离 */
+        }
+
+        .header-right > * {
+            margin-left: 10px; /* 调整这个值以改变刷新按钮与一键已读图标之间的距离 */
+        }
+
+        .mark-as-read-icon {
+            cursor: pointer;
+        }
+
+        .return-link {
+            display: flex;
+            align-items: center;
+        }
+
+        .return-icon {
+            width: 24px;
+        }
+
+        /*------------------------------------------------*/
+        .returned-card {
+            background-color: #f8f9fa; /* 灰色背景 */
+            color: #6c757d; /* 灰色文字 */
+        }
+
+        .returned-card .card-body {
+            color: #6c757d; /* 灰色文字 */
+        }
+        .returned-card .btn-secondary.disabled {
+            background-color: #6c757d; /* 灰色按钮 */
+            border-color: #6c757d;
+            cursor: not-allowed;
+        }
+        /*-------------------------------*/
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="header">
+        <div class="header-left">
+            <a href="/normalUser/index" title="返回主页" class="return-link">
+                <img src="/images/icon/返回图标.png" alt="返回" class="return-icon">
+            </a>
+            <h2 class="mb-0">借阅归还</h2>
+        </div>
+        <div class="header-right">
+            <button type="button" class="btn btn-primary mr-2" onclick="location.reload()">刷新记录</button>
+        </div>
+    </div>
+   <!-- <div class="container mt-5">
+        <div id="borrowed-books" class="row">
+            <div th:each="borrowRecord : ${borrowRecordList}" class="col-md-6 mb-4">
+                <div class="card" th:classappend="${borrowRecord.getReturnDate() != null} ? 'returned-card' : ''">
+                    <div class="card-body">
+                        <h2 class="card-title" th:text="'书名:📚  ' + ${borrowRecord.getBookTitle()}"></h2>
+                        <br>
+                        <p class="card-text" th:text="' 序列号:  【' + ${borrowRecord.getBookId()} + '】'"></p>
+                        <small class="text-muted" th:text="'借阅日期:【' + ${#dates.format(borrowRecord.getBorrowDate(), 'yyyy-MM-dd')} + '】'"></small>
+                    </div>
+                    <div class="card-status">
+                        <div>
+                            <span class="status-text" th:if="${borrowRecord.getReturnDate() != null}" th:text="'已归还🟢'"></span>
+                            <span class="status-text" th:unless="${borrowRecord.getReturnDate() != null}" th:text="'未归还🟡'"></span>
+                            <span th:if="${borrowRecord.getReturnDate() != null}" th:text="' | 归还日期: ' + ${#dates.format(borrowRecord.getReturnDate(), 'yyyy-MM-dd')}"></span>
+                            <span th:unless="${borrowRecord.getReturnDate() != null}" th:text="' | 截至日期: ' + ${#dates.format(borrowRecord.getDueDate(), 'yyyy-MM-dd')}"></span>
+                        </div>
+                        <button class="return-book-btn" th:classappend="${borrowRecord.getReturnDate() != null} ? 'btn-secondary disabled' : 'btn-primary'" th:text="${borrowRecord.getReturnDate() != null} ? '已归还' : '归还'" th:attr="data-book-id=${borrowRecord.getBookId()}"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+  <div class="container mt-5">
+        <div id="borrowed-books" class="row">
+            <div th:each="borrowRecord : ${borrowRecordList}" class="col-md-6 mb-4">
+                <div class="card"
+                     th:classappend="${borrowRecord.borrowStatusText == '已归还'} ? 'returned-card' : (${borrowRecord.borrowStatusText == '未归还'} ? 'not-returned-card' : 'pending-card')">
+                    <div class="card-body">
+                        <h2 class="card-title" th:text="'书名: 📚 ' + ${borrowRecord.bookTitle}"></h2>
+                        <p class="card-text" th:text="'序列号: 【' + ${borrowRecord.bookId} + '】'"></p>
+                        <small class="text-muted" th:text="'借阅日期: 【' + ${#dates.format(borrowRecord.borrowDate, 'yyyy-MM-dd')} + '】'"></small>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="status-text"
+                                  th:text="${borrowRecord.borrowStatusText} + (${borrowRecord.borrowStatusText == '已归还'} ? ' 🟢' : (${borrowRecord.borrowStatusText == '未归还'} ? ' 🟡' : ' 🟠'))"></span>
+                            <span th:if="${borrowRecord.borrowStatusText == '已归还'}"
+                                  th:text="'| 归还日期: ' + ${#dates.format(borrowRecord.returnDate, 'yyyy-MM-dd')}"></span>
+                            <span th:if="${borrowRecord.borrowStatusText == '未归还'}"
+                                  th:text="'| 截至日期: ' + ${#dates.format(borrowRecord.dueDate, 'yyyy-MM-dd')}"></span>
+                            <span th:if="${borrowRecord.borrowStatusText == '待处理'}"
+                                  th:text="'| 处理中...'"></span>
+                        </div>
+                        <button class="return-book-btn btn"
+                                th:classappend="${borrowRecord.borrowStatusText == '已归还'} ? 'btn-secondary disabled' : (${borrowRecord.borrowStatusText == '未归还'} ? 'btn-primary' : 'btn-danger disabled')"
+                                th:text="${borrowRecord.borrowStatusText}"
+                                th:attr="data-book-id=${borrowRecord.bookId}"
+                                th:disabled="${borrowRecord.borrowStatusText != '未归还'}"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div>
+    <footer class="footer">
+        <p>© 2024 By 智能图书管理系统</p>
+        <p>Powered by <a>TianQi</a> | 🌈 Theme by <a>天启</a></p>
+    </footer>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="/assets/js/bootstrap.bundle.js"></script>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        $('.return-book-btn').click(function() {
+            const bookId = $(this).data('book-id');
+            $.ajax({
+                url: '/books/return/' + bookId,
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        /*// 更新按钮颜色和其他UI元素
+                        $(this).closest('.card').addClass('returned-card');
+                        $(this).removeClass('btn-primary').addClass('btn-secondary disabled').text('待处理');*/
+                        location.reload();
+                        alert(response.message);
+                    } else {
+                        alert(response.message);
+                    }
+                }.bind(this),
+                error: function() {
+                    alert('请求失败，请稍后再试。');
+                }
+            });
+        });
+    });
+    setInterval(function() {
+        location.reload();
+    }, 60000);
+</script>
+</body>
+</html>

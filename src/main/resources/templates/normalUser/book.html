@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>云借阅图书管理系统</title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: '宋体', 'Helvetica Neue', Helvetica, sans-serif; /* 使用常见的网页字体 */
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #fef2ed, #eff7f2); /* 从左到右的渐变背景 */
+        }
+
+        .header {
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(to right, #aeaffb, #eff7f2, #eff7f2); /* 从左到右的渐变背景 */
+        }
+
+        .navbar {
+            background-color: #007bff;
+        }
+
+        .nav-link {
+            color: white !important;
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .book-info {
+            padding: 20px;
+        }
+
+        /*-----------------------------------------*/
+        .dl-title-text {
+            color: #4c4948; /* 设置文字颜色为黑色 */
+            font-family: '宋体', sans-serif; /* 选择一种优雅的字体 */
+            font-size: 25px; /* 调整字体大小 */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* 添加轻微的阴影效果 */
+            letter-spacing: 2px; /* 字母间距 */
+            line-height: 1.2; /* 行高 */
+        }
+
+        /*-----------------------------------------*/
+        .flex-container {
+            display: flex;
+            align-items: center; /* 垂直居中对齐 */
+        }
+
+        .book-icon {
+            width: 35px;
+            margin-left: 5px;
+        }
+
+        /*-----------------------------------------*/
+        .book-cover-container {
+            border-radius: 10px; /* 圆角 */
+            overflow: hidden; /* 确保图片不会超出容器 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* 平滑过渡效果 */
+        }
+
+        .book-cover-container:hover {
+            transform: scale(1.05); /* 鼠标悬停时放大 */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 更深的阴影 */
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block; /* 移除底部空白 */
+        }
+
+        /*-------------------------------------------*/
+        /* 设置footer的样式 */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: white;
+            color: #666; /* 使用较淡的颜色 */
+            text-align: center;
+            padding: 8px 0;
+            border-top: 1px solid #ddd;
+            border-radius: 15px 15px 0 0; /* 圆角边框 */
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+            font-family: Arial, sans-serif;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5; /* 增加行间距 */
+        }
+
+        .footer a {
+            color: #007bff; /* 使用蓝色链接颜色 */
+            text-decoration: none;
+            transition: color 0.3s ease; /* 平滑过渡效果 */
+        }
+
+        .footer a:hover {
+            color: #0056b3; /* 鼠标悬停时颜色变深 */
+        }
+
+        .footer img {
+            vertical-align: middle;
+            margin-right: 5px;
+            max-width: 16px;
+            max-height: 16px;
+        }
+
+        .card-title {
+            color: #333;
+            font-weight: bold; /* 字体加粗 */
+        }
+
+        .card-text {
+            margin: 10px 0;
+            font-size: 1em;
+            color: #555;
+        }
+
+        .summary-container {
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .summary-box {
+            margin-top: 10px;
+            font-size: 1em;
+            color: #333;
+        }
+
+        .borrow-book-btn {
+            margin-top: 20px;
+        }
+
+        /*---------------------------------*/
+        .return-link {
+            display: flex;
+            align-items: center;
+        }
+
+        .return-icon {
+            width: 26px;
+        }
+
+        .zdy > * {
+            margin-right: 10px; /* 调整这个值以改变返回图标与标题之间的距离 */
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light header">
+        <div class="dl-title">
+            <img src="/images/icon/书籍.png" alt="Logo"
+                 style="height: 50px;">
+            <span class="dl-title-text">云借阅图书管理系统</span>
+        </div>
+        <button class="navbar-toggler" type="button"
+                data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link"
+                       href="/normalUser/index">首页<span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="/category/index">分类</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="/books/rankingList">排行榜</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main role="main" class="container mt-4">
+    <div class="flex-container zdy">
+        <a href="/category/index" title="返回主页"
+           class="return-link">
+            <img src="/images/icon/返回图标.png" alt="返回"
+                 class="return-icon">
+        </a>
+        <h4>书籍概览</h4>
+        <img src="/images/icon/教育书籍资料.png" class="book-icon"
+             alt="书籍图标">
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="book-cover-container">
+                <img class="book-cover"
+                     th:src="@{${book.getCoverImageUrl()}}"
+                     alt="书籍封面"/>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card">
+                <div class="book-info">
+                    <h4 class="card-title"
+                        th:text="${book.getTitle()}">书名</h4>
+                    <p class="card-text">🧑作者：<span
+                            th:text="${book.getAuthor()}"></span></p>
+                    <p class="card-text">📋剩余：<span
+                            th:text="${book.getQuantity()}"></span>
+                    </p>
+                    <div class="summary-container">
+                        <div class="summary-box">
+                            <p th:text="${book.getSummary()}"></p>
+                        </div>
+                    </div>
+                    <small class="text-muted">⏳上架:
+                        <time th:text="${#dates.format(book.publishDate, 'yyyy-MM-dd')}"></time>
+                    </small>
+                    <button class="borrow-book-btn btn btn-primary"
+                            th:attr="data-book-id=${book.getBookId()}">
+                        申请借阅
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <p>© 2024 By 云借阅图书管理系统</p>
+    <p>Powered by <a>TianQi</a> | 🌈 Theme by <a>天启</a></p>
+</footer>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="/assets/js/bootstrap.bundle.js"></script>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js"
+        crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        $('.borrow-book-btn').click(function () {
+            const bookId = $(this).data('book-id');
+
+            $.ajax({
+                url: '/books/borrow/' + bookId,
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        // 更新按钮颜色或其他UI元素
+                        $(this).css('background-color', 'gray'); // 例如改变按钮颜色
+                        alert('借阅成功: ' + response.message);
+                    } else {
+                        alert('借阅失败: ' + response.message);
+                    }
+                }.bind(this), // 绑定this上下文
+                error: function () {
+                    alert('请求失败，请稍后再试。');
+                }
+            });
+        });
+    });
+
+    setInterval(function () {
+        location.reload();
+    }, 60000);
+</script>
+</body>
+</html>

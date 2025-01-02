@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>个人主页</title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: '宋体', 'Helvetica Neue', Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #fef2ed, #eff7f2);
+            /*设置背景图片*/
+        }
+
+        .header {
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(to right, #aeaffb, #eff7f2, #eff7f2);
+        }
+
+        .navbar {
+            background-color: #007bff;
+        }
+
+
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-info {
+            padding: 20px;
+        }
+
+        .user-info h4 {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .user-info p {
+            margin: 10px 0;
+            font-size: 1em;
+            color: #555;
+        }
+
+        .update-form {
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .update-form label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .update-form input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .update-form button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .update-form button:hover {
+            background-color: #0056b3;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: white;
+            color: #666;
+            text-align: center;
+            padding: 8px 0;
+            border-top: 1px solid #ddd;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #0056b3;
+        }
+
+        .footer img {
+            vertical-align: middle;
+            margin-right: 5px;
+            max-width: 16px;
+            max-height: 16px;
+        }
+
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light header">
+        <div class="dl-title">
+            <img src="/images/icon/书籍.png" alt="Logo"
+                 style="height: 50px;">
+            <span class="dl-title-text">智能图书管理系统</span>
+        </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/normalUser/index">首页<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/category/index">分类</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/books/rankingList">排行榜</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main role="main" class="container">
+    <h4 class="mt-4">个人主页</h4>
+    <hr>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body user-info">
+                    <h4>用户信息</h4>
+                    <hr>
+                    <p>用户名：<span th:text="${user.getUsername()}">username</span></p>
+                    <p>邮箱：<span th:text="${user.getEmail()}">email@example.com</span></p>
+                    <p>性别：<span th:text="${user.getGender()}">男/女</span></p>
+                    <p>年龄：<span th:text="${user.getAge()}">25</span></p>
+                    <hr>
+                    <p>借阅额度：<span th:text="${user.getBorrowQuota()}">10</span></p>
+                    <p>信誉积分：<span th:text="${user.getCreditPoints()}">100</span></p>
+                    <p>已借书籍数量：<span th:text="${user.getBorrowNumber()}">5</span></p>
+                </div>
+            </div>
+            <!-- 按钮 -->
+            <button id="editInfoBtn" class="btn btn-secondary mb-4" >信息修改⚙</button>
+            <button id="editInfoBtn2" class="btn btn-secondary mb-4">密码重置⚙</button>
+
+            <!-- 隐藏的表单 -->
+            <div id="updateForm" class="card mb-4 shadow-sm update-form" style="display:none;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4>基础信息更新</h4>
+                        <button type="button" class="close" style="width: 45px" aria-label="Close" id="closeUpdateForm">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="/normalUser/personInfo/save" method="post">
+                        <label for="username">用户名：</label>
+                        <input type="text" id="username" name="username" placeholder="请输入4-20位用户名" th:value="${user.getUsername()}">
+                        <br>
+                        <label for="email">邮箱：</label>
+                        <input type="email" id="email" name="email" th:value="${user.getEmail()}">
+                        <br>
+                        <label for="gender">性别：</label>
+                        <select id="gender" name="gender">
+                            <option value="男" th:selected="${user.getGender() == '男'}">男</option>
+                            <option value="女" th:selected="${user.getGender() == '女'}">女</option>
+                        </select>
+                        <br>
+                        <label for="age">年龄：</label>
+                        <input type="number" id="age" name="age" th:value="${user.getAge()}">
+                        <br>
+                        <button type="submit" class="btn btn-success" style="background-color: #cccff7; color: #000;">更新信息</button>
+                    </form>
+                </div>
+            </div>
+            <!-- 密码修改模态框 -->
+            <div id="passwordUpdateForm" class="card mb-4 shadow-sm update-form" style="display:none;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4>密码修改</h4>
+                        <button type="button" class="close" style="width: 45px" aria-label="Close" id="closeUpdateForm2">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="passwordForm">
+                        <label for="oldPassword">原密码：</label>
+                        <input type="password" id="oldPassword" name="oldPassword" required>
+                        <br>
+                        <label for="newPassword">新密码：</label>
+                        <input type="password" id="newPassword" name="newPassword" required>
+                        <br>
+                        <button type="submit" class="btn btn-primary" style="background-color: #cccff7; color: #000;">确认修改</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer class="footer">
+    <p>© 2024 By 云借阅图书管理系统</p>
+    <p>Powered by <a>TianQi</a> | 🌈 Theme by <a>天启</a></p>
+</footer>
+
+<script src="/assets/js/bootstrap.bundle.js"></script>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 绑定信息修改按钮点击事件
+        document.getElementById('editInfoBtn').addEventListener('click', function () {
+            document.getElementById('updateForm').style.display = 'block';
+        });
+
+        // 绑定密码修改按钮点击事件
+        document.getElementById('editInfoBtn2').addEventListener('click', function () {
+            document.getElementById('passwordUpdateForm').style.display = 'block';
+        });
+        // 绑定关闭按钮点击事件
+        document.getElementById('closeUpdateForm').addEventListener('click', function () {
+            document.getElementById('updateForm').style.display = 'none';
+        });
+        // 绑定关闭按钮点击事件
+        document.getElementById('closeUpdateForm2').addEventListener('click', function () {
+            document.getElementById('passwordUpdateForm').style.display = 'none';
+        });
+        // 绑定密码修改表单提交事件
+        document.getElementById('passwordForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // 阻止表单默认提交行为
+
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+
+            // 使用 AJAX 发送数据到后端
+            fetch('/normalUser/password/change', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ oldPassword, newPassword })
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('密码修改成功！');
+                        setTimeout(() => {
+                            document.getElementById('passwordUpdateForm').style.display = 'none';
+                        }, 3000);
+                    } else {
+                        alert('密码修改失败：' + data.message);
+                    }
+                }).catch(error => {
+                console.error('Error:', error);
+                alert('发生错误，请稍后再试。');
+            });
+        });
+    });
+</script>
+</html>

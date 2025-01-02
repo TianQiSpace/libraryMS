@@ -1,0 +1,11 @@
+app:
+  validation:
+    username:
+      min-length: 4
+      max-length: 20
+      regex: "^[a-zA-Z0-9\\u4e00-\\u9fa5]+$" # 账户名的基础匹配规则
+    password:
+      length: 8
+    email:
+      regex: '^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$'
+

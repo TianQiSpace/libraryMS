@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianqi.libraryms.mapper.PublisherMapper">
+
+    <resultMap id="BaseResultMap" type="com.tianqi.libraryms.entity.Publisher">
+            <id property="publisherId" column="publisher_id" jdbcType="INTEGER"/>
+            <result property="publisherName" column="publisher_name" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="contactPhone" column="contact_phone" jdbcType="VARCHAR"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="website" column="website" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        publisher_id,publisher_name,address,
+        contact_phone,email,website
+    </sql>
+</mapper>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>分类详情</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <style>
+        /* 通用样式 */
+        body {
+            font-family: '宋体', 'Helvetica Neue', Helvetica, sans-serif; /* 使用常见的网页字体 */
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #fef4ea, #eff7f2); /* 从左到右的渐变背景 */
+        }
+        /*--------------------------------------------------*/
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15)!important;
+            transition: all 0.3s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 1rem 2rem rgba(0,0,0,.25)!important;
+        }
+        .card-title {
+            font-weight: bold;
+        }
+        /*---------------------------------------------------------*/
+        /* 设置footer的样式 */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: white;
+            color: #666; /* 使用较淡的颜色 */
+            text-align: center;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            border-radius: 15px 15px 0 0; /* 圆角边框 */
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+            font-family: Arial, sans-serif;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5; /* 增加行间距 */
+        }
+
+        .footer a {
+            color: #007bff; /* 使用蓝色链接颜色 */
+            text-decoration: none;
+            transition: color 0.3s ease; /* 平滑过渡效果 */
+        }
+
+        .footer a:hover {
+            color: #0056b3; /* 鼠标悬停时颜色变深 */
+        }
+
+        .footer img {
+            vertical-align: middle;
+            margin-right: 5px;
+            max-width: 16px;
+            max-height: 16px;
+        }
+
+        /* 头部样式 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: linear-gradient(to right,  #eff7f2,#aeaffb); /* 从左到右的渐变背景 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid #ddd;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .header-left,
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-left > * {
+            margin-right: 10px; /* 调整这个值以改变返回图标与标题之间的距离 */
+        }
+
+        .header-right > * {
+            margin-left: 10px; /* 调整这个值以改变刷新按钮与一键已读图标之间的距离 */
+        }
+
+        .return-link {
+            display: flex;
+            align-items: center;
+        }
+
+        .return-icon {
+            width: 24px;
+        }
+
+        /* 分类列表样式 */
+        .category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .category-list li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .category-list li:hover {
+            background-color: #f9f9f9;
+        }
+
+        .category-list li.active {
+            background-color: #e0e0e0;
+        }
+
+        /* 书籍卡片样式 */
+        .book-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .book-card:last-child {
+            border-bottom: none;
+        }
+
+        .book-image {
+            width: 100px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+
+        .book-info {
+            flex: 1;
+        }
+
+        .book-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .book-author {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .view-details-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .view-details-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="header">
+        <div class="header-left">
+            <a href="/normalUser/index" title="返回主页" class="return-link">
+                <img src="/images/icon/返回图标.png" alt="返回" class="return-icon">
+            </a>
+            <h2 class="mb-0">
+                分类详情📚
+            </h2>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-3">
+                <h4>分类列表</h4>
+                <ul class="category-list" id="categoryList">
+                    <li class="active" data-category-id="0">全部分类</li>
+                    <li th:each="category : ${allCategory}" th:data-category-id="${category.categoryId}" th:text="${category.categoryName}"></li>
+                </ul>
+            </div>
+            <div class="col-md-9">
+                <h4>书籍列表</h4>
+                <div id="bookListContainer">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row" id="bookList">
+                                <!-- 书籍卡片将在这里动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <footer class="footer">
+        <p>© 2024 By 云借阅图书管理系统</p>
+        <p>Powered by <a>TianQi</a> | 🌈 Theme by <a>天启</a></p>
+    </footer>
+</div>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/assets/js/bootstrap.bundle.js"></script>
+<script>
+    $(document).ready(function() {
+        //默认加载全部类型的书籍。
+        loadBooksByCategory(0);
+
+        // 为分类列表项添加点击事件
+        $('.category-list li').click(function() {
+            const categoryId = $(this).data('category-id');
+            loadBooksByCategory(categoryId);
+            // 更新激活状态
+            $('.category-list li').removeClass('active');
+            $(this).addClass('active');
+        });
+        function loadBooksByCategory(categoryId) {
+            // 使用Ajax请求从后端获取书籍数据
+            $.ajax({
+                url: '/searchBookByCategoryId/' + categoryId,
+                method: 'GET',
+                dataType: 'json',  // 指定预期服务器返回的数据类型
+                success: function(response) {
+                    if (response.success) {
+                        const books = response.data;
+
+                        // 清空现有书籍列表
+                        $('#bookList').empty();
+
+                        // 动态生成书籍卡片
+                        books.forEach(function(book) {
+                            var bookCard = `
+                        <div class="book-card">
+                            <img src="${book.coverImageUrl }" alt="书籍封面" class="book-image">
+                            <div class="book-info">
+                                <p class="book-title">${book.title}</p>
+                                <p class="book-author">${book.author}</p>
+                            </div>
+                            <a href="/books/search/${book.bookId}" class="view-details-btn">查看详情</a>
+                        </div>
+                    `;
+                            $('#bookList').append(bookCard);
+                        });
+                    } else {
+                        // 处理查询失败的情况
+                        console.error('查询失败:', response.message);
+                        $('#bookList').html('<p>未找到相关书籍</p>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('请求失败:', error);
+                    // 显示错误消息给用户
+                    $('#bookList').html('<p>请求失败，请稍后再试</p>');
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

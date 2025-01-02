@@ -1,0 +1,51 @@
+body {
+    font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif; /* 使用常见的网页字体 */
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #fef4ea, #eff7f2); /* 从左到右的渐变背景 */
+}
+
+.header {
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to right, #aeaffb, #eff7f2); /* 从左到右的渐变背景 */
+}
+
+.footer {
+    color: white;
+    padding: 1rem 0;
+    margin-top: 2rem;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+.card-header {
+    background-color: #007bff;
+    color: white;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.nav-link {
+    color: #007bff;
+}
+
+.nav-link.active {
+    color: #0056b3;
+    font-weight: bold;
+}
+
+.dl-log-user {
+    font-weight: bold;
+}

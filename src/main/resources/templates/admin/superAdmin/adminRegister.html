@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"
+          content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>管理员用户添加</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link href="/css/gloab.css" rel="stylesheet">
+    <link href="/css/index.css" rel="stylesheet">
+    <script src="/js/jquery-3.2.1.min.js"></script>
+    <script src="/js/steps.js"></script>
+    <style>
+        /* 通用样式 */
+        body {
+            font-family: '宋体', 'Helvetica Neue', Helvetica, sans-serif; /* 使用常见的网页字体 */
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #fef4ea, #eff7f2); /* 从左到右的渐变背景 */
+
+        }
+
+        /*-----------------------------------------------*/
+        /* 设置nav-link的样式 */
+        .nav-link {
+            color: #007bff;
+        }
+
+        /* 设置nav-link激活时的样式 */
+        .nav-link.active {
+            color: #0056b3;
+            font-weight: bold;
+        }
+
+        .navbar-nav {
+            display: flex;
+            justify-content: space-between;
+            width: 100%; /* 确保导航栏占满整个宽度 */
+        }
+
+        .nav-item.ms-auto {
+            margin-left: auto; /* 将搜索栏推到最右边 */
+        }
+
+        /* 设置dl-log-user的样式 */
+        .dl-log-user {
+            font-weight: bold;
+        }
+
+        .dl-title-text {
+            color: #4c4948; /* 设置文字颜色为黑色 */
+            font-family: '宋体', sans-serif; /* 选择一种优雅的字体 */
+            font-size: 25px; /* 调整字体大小 */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* 添加轻微的阴影效果 */
+            letter-spacing: 2px; /* 字母间距 */
+            line-height: 1.2; /* 行高 */
+        }
+
+        .zdy {
+            color: #666666; /* 设置文字颜色为黑色 */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* 添加轻微的阴影效果 */
+        }
+
+        /*----------------------------------------------*/
+        .form-inline {
+            display: flex;
+            align-items: center; /* 垂直居中对齐 */
+        }
+
+        .form-control {
+            flex: 1; /* 使输入框占据剩余空间 */
+        }
+
+        .btn {
+            margin-left: 5px; /* 可选：为按钮添加一些左边距 */
+        }
+
+        /*-----------------------------------------------*/
+        /* 设置card的样式 */
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            height: 100%; /* 卡片高度占满其父容器 */
+            font-family: '宋体', sans-serif; /* 选择一种优雅的字体 */
+        }
+
+        /* 设置card悬浮时的样式 */
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -10px; /* 与 .mb-3 和 .col-md-4 的边距相抵消 */
+            color: #f7f6f2;
+        }
+
+        .card-container > div {
+            padding: 10px; /* 与 .mb-3 和 .col-md-4 的边距相抵消 */
+        }
+
+        /* 设置card-header的样式 */
+        .card-header {
+            color: white;
+            font-weight: bold; /* 加粗字体 */
+        }
+
+        /* 设置card-body的样式 */
+        .card-body {
+            color: #f7f6f2;
+            padding: 1.5rem;
+            flex: 1 0 auto; /* 让 .card-body 可以扩展 */
+        }
+
+        .featured-book {
+            margin-bottom: 1rem;
+        }
+
+        .book-cover {
+            width: 50px; /* 你可以根据需要调整大小 */
+            height: auto;
+            border-radius: 5px;
+        }
+
+        /*----------------------------------------------*/
+        /* 自定义列表项样式 */
+        .custom-list-item {
+            border-radius: 15px; /* 圆角边框 */
+            padding: 10px;
+            margin-bottom: 3px; /* 列表项之间的间距 */
+            background-color: #fff; /* 背景颜色 */
+            border: 1px solid #e0e0e0; /* 边框颜色 */
+            transition: all 0.3s ease; /* 平滑过渡效果 */
+            font-family: '宋体', 'Helvetica Neue', Helvetica, sans-serif;
+            text-align: left;
+        }
+
+        .custom-list-item:hover {
+            background-color: #f0f0f0; /* 鼠标悬停时背景颜色变化 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 悬停时添加阴影 */
+        }
+
+        /*---------------------------------------------------------*/
+        /* 设置footer的样式 */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 70%;
+            background-color: white;
+            color: #666; /* 使用较淡的颜色 */
+            text-align: center;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            border-radius: 15px 15px 0 0; /* 圆角边框 */
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+            font-family: 'Arial', sans-serif; /* 选择一种优雅的字体 */
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5; /* 增加行间距 */
+        }
+
+        .footer a {
+            color: #007bff; /* 使用蓝色链接颜色 */
+            text-decoration: none;
+            transition: color 0.3s ease; /* 平滑过渡效果 */
+        }
+
+        .footer a:hover {
+            color: #0056b3; /* 鼠标悬停时颜色变深 */
+        }
+
+        .footer img {
+            vertical-align: middle;
+            margin-right: 5px;
+            max-width: 16px;
+            max-height: 16px;
+        }
+
+        /*------------------------------------------------*/
+
+        /* 最后一个退出图标与容器边框的距离 */
+        .message-link:last-child .message-icon {
+            margin-right: 17px; /* 设置退出图标与容器右边框的距离 */
+        }
+
+        .d-flex {
+            display: flex;
+            align-items: center; /* 垂直居中对齐 */
+            padding: 0 10px; /* 左右内边距，可以根据需要调整 */
+        }
+
+        /* 元素间的间距 */
+        .me-2,
+        .ms-2 {
+            margin-right: 10px; /* 右边距 */
+            margin-left: 10px; /* 左边距 */
+        }
+
+        .dl-log-user,
+        .message-link:last-child {
+            margin-right: 8px; /* 调整元素间的距离 */
+        }
+
+        /*-------------------------*/
+        /* 自定义下拉菜单项的宽度 */
+        .dropdown-menu .dropdown-item {
+            width: 150px; /* 根据需要调整宽度 */
+            padding: 0.25rem 1rem; /* 可选：调整内边距以适应新的宽度 */
+        }
+    </style>
+</head>
+<body>
+<div class="login-box">
+    <div class="main">
+        <form action="/superAdmin/adminRegister" method="post" class="definewidth m20">
+            <div class="reg-box-pan display-inline">
+                <div class="reg-box" id="verifyCheck"
+                     style="margin-top:20px;">
+                    <div class="part1">
+                        <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl"><b
+                                class="ftx04">*</b>用户名：</span>
+                            <div class="f-fl item-ifo">
+                                <input type="text" maxlength="20"
+                                       class="txt03 f-r3 required"
+                                       tabindex="1"
+                                       data-valid="isNonEmpty||between:4-20||isUname"
+                                       data-error="管理员账户名不能为空||账户长度在4-20位||只能输入中文、字母、数字、下划线，且以中文或字母开头"
+                                       id="adminNo"
+                                       name="username"
+                                       placeholder="请输入用户名"
+                                       required>
+                                <span class="ie8 icon-close close hide"></span>
+                                <label class="icon-sucessfill blank hide"></label>
+                                <label class="focus"><span>4-20位，中文、字母、数字、下划线的组合，以中文或字母开头</span></label>
+                                <label class="focus valid"></label>
+                                <div id="usernameFeedback"
+                                     class="feedback hide"></div>
+                            </div>
+                        </div>
+                        <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl"><b
+                                class="ftx04">*</b>密码：</span>
+                            <div class="f-fl item-ifo">
+                                <input type="password" id="password"
+                                       maxlength="20"
+                                       name="password"
+                                       class="txt03 f-r3 required"
+                                       tabindex="2"
+                                       style="ime-mode:disabled;"
+                                       required
+                                       onpaste="return false"
+                                       autocomplete="off"
+                                       data-valid="isNonEmpty||between:8||level:2"
+                                       data-error="密码不能为空||密码长度8位||该密码太简单，有被盗风险，建议字母+数字的组合">
+                                <span class="ie8 icon-close close hide"
+                                      style="right:55px"></span>
+                                <span class="showpwd"
+                                      data-eye="password"></span>
+                                <label class="icon-sucessfill blank hide"></label>
+                                <label class="focus">8位英文（区分大小写）、数字、字符的组合</label>
+                                <label class="focus valid"></label>
+                                <span class="clearfix"></span>
+                                <label class="strength">
+                                    <span class="f-fl f-size12">安全程度：</span>
+                                    <b><i>弱</i><i>中</i><i>强</i></b>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl"><b
+                                class="ftx04">*</b>确认密码：</span>
+                            <div class="f-fl item-ifo">
+                                <input type="password" maxlength="20"
+                                       class="txt03 f-r3 required"
+                                       tabindex="3"
+                                       style="ime-mode:disabled;"
+                                       onpaste="return false"
+                                       autocomplete="off"
+                                       required="required"
+                                       data-valid="isNonEmpty||between:6-16||isRepeat:password"
+                                       data-error="密码不能为空||密码长度6-16位||两次密码输入不一致"
+                                       id="rePassword">
+                                <span class="ie8 icon-close close hide"
+                                      style="right:55px"></span>
+                                <span class="showpwd"
+                                      data-eye="rePassword"></span>
+                                <label class="icon-sucessfill blank hide"></label>
+                                <label class="focus">请再输入一遍上面的密码</label>
+                                <label class="focus valid"></label>
+                            </div>
+                        </div>
+                        <div class="item col-xs-12">
+                            <span class="intelligent-label f-fl">性别：</span>
+                            <div class="f-fl item-ifo">
+                                <select id="gender" name="gender"
+                                        class="txt03 f-r3">
+                                    <option value="">请选择</option>
+                                    <option value="男">男</option>
+                                    <option value="女">女</option>
+                                </select>
+                                <label class="focus">请选择账户性别</label>
+                            </div>
+                        </div>
+                        <div class="item col-xs-12">
+                            <span class="intelligent-label f-fl">年龄：</span>
+                            <div class="f-fl item-ifo">
+                                <input type="number" id="age"
+                                       class="txt03 f-r3" min="0"
+                                       max="120" required="required" name="age">
+                                <label class="focus">请输入账户年龄（0-120）</label>
+                            </div>
+                        </div>
+                        <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl"><b
+                                class="ftx04">*</b>邮箱：</span>
+                            <div class="f-fl item-ifo">
+                                <input type="email" name="email"
+                                       class="txt03 f-r3 required"
+                                       tabindex="2"
+                                       data-valid="isNonEmpty"
+                                       required="required"
+                                       data-error="请输入有效的邮箱地址"
+                                       id="email">
+                                <span class="ie8 icon-close close hide"></span>
+                                <label class="icon-sucessfill blank hide"></label>
+                                <label class="focus">请输入有效的邮箱地址</label>
+                                <label class="focus valid"></label>
+                            </div>
+                        </div>
+                        <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl"><b
+                                class="ftx04">*</b>人机验证：</span>
+                            <div class="f-fl item-ifo">
+                                <input type="text" maxlength="4"
+                                       class="txt03 f-r3 f-fl required"
+                                       tabindex="4"
+                                       style="width:167px"
+                                       id="randCode"
+                                       data-valid="isNonEmpty"
+                                       required="required"
+                                       data-error="验证码不能为空">
+                                <span class="ie8 icon-close close hide"></span>
+                                <label class="f-size12 c-999 f-fl f-pl10">
+                                    <img id="captchaImage"
+                                         alt="验证码"
+                                         style="height: 30px; width: auto;">
+                                </label>
+                                <label class="icon-sucessfill blank hide"
+                                       style="left:380px"></label>
+                                <label class="focusa">看不清？<a
+                                        href="javascript:generateCaptcha();"
+                                        class="c-blue"
+                                        id="changeCaptcha">换一张</a></label>
+                                <label class="focus valid"
+                                       style="left:370px"></label>
+                            </div>
+                        </div>
+                        <div class="item col-xs-12">
+                            <span class="intelligent-label f-fl"></span>
+                            <div class="f-fl item-ifo">
+                                <button type="submit" class="btn btn-primary">添加账户</button> &nbsp;&nbsp;
+                                <span class="ie8 icon-close close hide"></span>
+                                <label class="icon-sucessfill blank hide"></label>
+                                <label class="focus valid"></label>
+                                <a type="button" class="btn btn-primary"
+                                   href="/superAdmin/adminUserManageIndex">
+                                    返回
+                                </a>
+                            </div>
+                            <div id="messageBox" class="message-box"
+                                 style="display:none; font-size: 15px; font-family: 'KaiTi'; color: red; margin-top: 15px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+<div class="m-sPopBg" style="z-index:998;"></div>
+
+<script>
+    // 1.生成人机验证码（对）
+    function generateCaptcha() {
+        const captcha = Math.random().toString(36).substring(2, 6).toUpperCase();
+        window.captcha = captcha;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 40;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#f0f0f0';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.font = '28px Arial';
+        ctx.fillStyle = '#000';
+        ctx.fillText(captcha, 10, 30);
+
+        for (let i = 0; i < 5; i++) {
+            ctx.beginPath();
+            ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+            ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+            ctx.strokeStyle = `rgba(0, 0, 0, ${Math.random()})`;
+            ctx.stroke();
+        }
+
+        const captchaImageSrc = canvas.toDataURL();
+        document.getElementById('captchaImage').src = captchaImageSrc;
+
+        sessionStorage.setItem('captcha', captcha);
+    }
+
+    // 2.初始化人机验证码（对）
+    generateCaptcha();
+
+    // 3.人机验证码验证（对）
+    function verifyCaptcha() {
+        const inputCaptcha = document.getElementById('randCode').value;
+        const storedCaptcha = sessionStorage.getItem('captcha');
+        if (inputCaptcha === storedCaptcha) {
+            return true;
+        } else {
+            showMessage('验证码错误！');
+            return false;
+        }
+    }
+
+    // 4.显示系统提示信息函数（对）
+    function showMessage(message) {
+        const messageBox = document.getElementById('messageBox');
+        messageBox.style.display = 'block';
+        messageBox.textContent = message;
+
+        setTimeout(() => {
+            messageBox.style.display = 'none';
+        }, 3000);
+    }
+</script>
+</body>
+</html>
+

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<!--这个页面用来处理当搜索没有找任何内容和的时候跳转到空的提示界面-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>空空如也</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .no-results-image {
+            max-width: 100%;
+            height: auto;
+        }
+        /*---------------------------------------------------------*/
+        /* 设置footer的样式 */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: white;
+            color: #666; /* 使用较淡的颜色 */
+            text-align: center;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            border-radius: 15px 15px 0 0; /* 圆角边框 */
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5; /* 增加行间距 */
+        }
+
+        .footer a {
+            color: #007bff; /* 使用蓝色链接颜色 */
+            text-decoration: none;
+            transition: color 0.3s ease; /* 平滑过渡效果 */
+        }
+
+        .footer a:hover {
+            color: #0056b3; /* 鼠标悬停时颜色变深 */
+        }
+
+        .footer img {
+            vertical-align: middle;
+            margin-right: 5px;
+            max-width: 16px;
+            max-height: 16px;
+        }
+
+        /*------------------------------------------------*/
+
+    </style>
+</head>
+<body>
+<div class="container" id="noResultsContainer">
+    <!--给出一张提示照片，大小缩放为70-->
+    <img src="/images/icon/未找到-这里什么都没有.png" alt="这里什么也没有" class="no-results-image" style="width: 50%;">
+    <p>这里似乎空空如也~~</p>
+</div>
+
+<script >
+    // 当页面加载完成后执行
+    window.onload = function() {
+        // 设置3秒后跳转到主页
+        setTimeout(function() {
+            window.location.href = "/normalUser/index";  // 请将这里的URL替换为你的主页地址
+        }, 2000);  // 2000毫秒即2秒
+    };
+</script>
+</body>
+</html>

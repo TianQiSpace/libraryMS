@@ -1,0 +1,321 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>每日推荐 - 云借阅图书管理系统</title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+
+    <style>
+        body {
+            font-family: '宋体', 'Helvetica Neue', Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #fef2ed, #eff7f2);
+        }
+
+        .header {
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(to right, #aeaffb, #eff7f2, #eff7f2);
+        }
+
+        .navbar {
+            background-color: #007bff;
+        }
+
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .book-info {
+            padding: 20px;
+        }
+
+        .dl-title-text {
+            color: #4c4948;
+            font-family: '宋体', sans-serif;
+            font-size: 25px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+            line-height: 1.2;
+        }
+
+        .flex-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .book-icon {
+            width: 35px;
+            margin-left: 5px;
+        }
+
+        .book-cover-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .book-cover-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: white;
+            color: #666;
+            text-align: center;
+            padding: 8px 0;
+            border-top: 1px solid #ddd;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #0056b3;
+        }
+
+        .footer img {
+            vertical-align: middle;
+            margin-right: 5px;
+            max-width: 16px;
+            max-height: 16px;
+        }
+
+        .card-title {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .card-text {
+            margin: 10px 0;
+            font-size: 1em;
+            color: #555;
+        }
+
+        .summary-container {
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .summary-box {
+            margin-top: 10px;
+            font-size: 1em;
+            color: #333;
+            white-space: pre-line;
+        }
+
+        .borrow-book-btn {
+            margin-top: 20px;
+        }
+
+        .return-link {
+            display: flex;
+            align-items: center;
+        }
+
+        .return-icon {
+            width: 26px;
+        }
+
+        .zdy > * {
+            margin-right: 10px;
+        }
+        /*-----------------------*/
+        .d-flex.align-items-stretch {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .col-md-4.d-flex {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card.h-100 {
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light header">
+        <div class="dl-title">
+            <img src="/images/icon/书籍.png" alt="Logo"
+                 style="height: 50px;">
+            <span class="dl-title-text">云借阅图书管理系统</span>
+        </div>
+        <button class="navbar-toggler" type="button"
+                data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link"
+                       href="/normalUser/index">首页<span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="/category/index">分类</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="/books/rankingList">排行榜</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+    <div id="bookCarousel" class="carousel slide" data-ride="carousel" data-interval="2000" data-pause="false">
+        <div class="carousel-inner">
+            <div th:each="book, status : ${recommendBooks}" th:class="${status.index == 0 ? 'carousel-item active' : 'carousel-item'}">
+                <div class="d-flex align-items-stretch row">
+                    <h4>书籍推荐：</h4>
+                    <hr>
+                    <div class="col-md-4 d-flex align-items-center justify-content-center">
+                        <div class="book-cover-container">
+                            <img class="book-cover" th:src="@{${book.getCoverImageUrl()}}" alt="书籍封面"/>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card h-100">
+                            <div class="book-info">
+                                <h4 class="card-title" th:text="${book.getTitle()}">书名</h4>
+                                <p class="card-text">🧑作者：<span th:text="${book.getAuthor()}"></span></p>
+                                <p class="card-text">📋剩余：<span th:text="${book.getQuantity()}"></span></p>
+                                <div class="summary-container">
+                                    <div class="summary-box">
+                                        <p th:text="${book.getSummary()}"></p>
+                                    </div>
+                                </div>
+                                <small class="text-muted">⏳上架: <time th:text="${#dates.format(book.publishDate, 'yyyy-MM-dd')}"></time></small>
+                                <button class="borrow-book-btn btn btn-primary" th:attr="data-book-id=${book.getBookId()}">申请借阅</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#bookCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#bookCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+
+
+<footer class="footer">
+    <p>© 2024 By 云借阅图书管理系统</p>
+    <p>Powered by <a>TianQi</a> | 🌈 Theme by <a>天启</a></p>
+</footer>
+
+<script src="/assets/js/bootstrap.bundle.js"></script>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/assets/css/bootstrap.min.css"></script>
+<script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log("DOM fully loaded and parsed");
+
+        // 获取 Carousel 实例
+        var carousel = new bootstrap.Carousel(document.getElementById('bookCarousel'), {
+            interval: 4000, // 每7秒切换一次
+            pause: false,  // 不在鼠标悬停时暂停
+            wrap: true     // 循环播放
+        });
+
+        // 启动 Carousel
+        carousel.cycle();
+    });
+    $(document).ready(function () {
+        $('.borrow-book-btn').click(function () {
+            const bookId = $(this).data('book-id');
+
+            $.ajax({
+                url: '/books/borrow/' + bookId,
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        // 更新按钮颜色或其他UI元素
+                        $(this).css('background-color', 'gray'); // 例如改变按钮颜色
+                        alert('借阅成功: ' + response.message);
+                    } else {
+                        alert('借阅失败: ' + response.message);
+                    }
+                }.bind(this), // 绑定this上下文
+                error: function () {
+                    alert('请求失败，请稍后再试。');
+                }
+            });
+        });
+    });
+
+    setInterval(function () {
+        location.reload();
+    }, 60000);
+</script>
+</body>
+</html>

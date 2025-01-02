@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"
+          content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>用户注册页面</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link href="/css/gloab.css" rel="stylesheet">
+    <link href="/css/index.css" rel="stylesheet">
+    <script src="/js/jquery-3.2.1.min.js"></script>
+    <script src="/js/steps.js"></script>
+    <script src="/assets/js/bootstrap.bundle.js"></script>
+    <style>
+        .captcha-message {
+            display: none;
+            font-size: 12px;
+            font-family: 'KaiTi';
+            color: red;
+            margin-top: 10px;
+        }</style>
+</head>
+<body>
+<div class="login-box">
+    <div class="main">
+        <div class="reg-box-pan display-inline">
+            <div class="step">
+                <ul>
+                    <li class="col-xs-4 on">
+                        <span class="num"><em
+                                class="f-r5"></em><i>1</i></span>
+                        <span class="line_bg lbg-r"></span>
+                        <p class="lbg-txt">填写账户信息</p>
+                    </li>
+                    <li class="col-xs-4">
+                        <span class="num"><em
+                                class="f-r5"></em><i>2</i></span>
+                        <span class="line_bg lbg-l"></span>
+                        <span class="line_bg lbg-r"></span>
+                        <p class="lbg-txt">验证账户信息</p>
+                    </li>
+                    <li class="col-xs-4">
+                        <span class="num"><em
+                                class="f-r5"></em><i>3</i></span>
+                        <span class="line_bg lbg-l"></span>
+                        <p class="lbg-txt">注册成功</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="reg-box" id="verifyCheck"
+                 style="margin-top:20px;">
+                <div class="part1">
+                    <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl"><b
+                                class="ftx04">*</b>用户名：</span>
+                        <div class="f-fl item-ifo">
+                            <input type="text" maxlength="20"
+                                   class="txt03 f-r3 required"
+                                   tabindex="1"
+                                   data-valid="isNonEmpty||between:3-20||isUname"
+                                   data-error="用户名不能为空||用户名长度4-20位||只能输入中文、字母、数字、下划线，且以中文或字母开头"
+                                   id="adminNo"
+                                   required>
+                            <span class="ie8 icon-close close hide"></span>
+                            <label class="icon-sucessfill blank hide"></label>
+                            <label class="focus"><span>4-20位，中文、字母、数字、下划线的组合，以中文或字母开头</span></label>
+                            <label class="focus valid"></label>
+                            <div id="usernameFeedback"
+                                 class="feedback hide"></div>
+                        </div>
+                    </div>
+                    <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl"><b
+                                class="ftx04">*</b>密码：</span>
+                        <div class="f-fl item-ifo">
+                            <input type="password" id="password"
+                                   maxlength="20" minlength="8"
+                                   class="txt03 f-r3 required"
+                                   tabindex="2"
+                                   style="ime-mode:disabled;"
+                                   required="required"
+                                   onpaste="return false"
+                                   autocomplete="off"
+                                   data-valid="isNonEmpty||between:8-8||level:2"
+                                   data-error="密码不能为空||密码长度8位||该密码太简单，有被盗风险，建议字母+数字的组合">
+                            <span class="ie8 icon-close close hide"
+                                  style="right:55px"></span>
+                            <span class="showpwd"
+                                  data-eye="password"></span>
+                            <label class="icon-sucessfill blank hide"></label>
+                            <label class="focus">8位英文（区分大小写）、数字、字符的组合</label>
+                            <label class="focus valid"></label>
+                            <span class="clearfix"></span>
+                            <label class="strength">
+                                <span class="f-fl f-size12">安全程度：</span>
+                                <b><i>弱</i><i>中</i><i>强</i></b>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl"><b
+                                class="ftx04">*</b>确认密码：</span>
+                        <div class="f-fl item-ifo">
+                            <input type="password" maxlength="8"
+                                   minlength="8"
+                                   class="txt03 f-r3 required"
+                                   tabindex="3"
+                                   style="ime-mode:disabled;"
+                                   onpaste="return false"
+                                   autocomplete="off"
+                                   required="required"
+                                   data-valid="isNonEmpty||between:8-8||isRepeat:password"
+                                   data-error="密码不能为空||密码长度8位||两次密码输入不一致"
+                                   id="rePassword">
+                            <span class="ie8 icon-close close hide"
+                                  style="right:55px"></span>
+                            <span class="showpwd"
+                                  data-eye="rePassword"></span>
+                            <label class="icon-sucessfill blank hide"></label>
+                            <label class="focus">请再输入一遍上面的密码</label>
+                            <label class="focus valid"></label>
+                        </div>
+                    </div>
+                    <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl">性别：</span>
+                        <div class="f-fl item-ifo">
+                            <select id="gender"
+                                    class="txt03 f-r3 required">
+                                <option value="">请选择</option>
+                                <option value="男">男</option>
+                                <option value="女">女</option>
+                            </select>
+                            <label class="focus">请选择您的性别</label>
+                        </div>
+                    </div>
+                    <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl">年龄：</span>
+                        <div class="f-fl item-ifo">
+                            <input type="number"
+                                   id="age"
+                                   class="txt03 f-r3"
+                                   min="0" max="120"
+                                   required="required"
+                                   data-valid="isNonEmpty"
+                                   data-error="年龄不能为空">
+                            <label class="focus">请输入您的年龄</label>
+                        </div>
+                    </div>
+                    <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl"><b
+                                class="ftx04">*</b>邮箱：</span>
+                        <div class="f-fl item-ifo">
+                            <input type="email"
+                                   class="txt03 f-r3 required"
+                                   tabindex="2"
+                                   data-valid="isNonEmpty"
+                                   required="required"
+                                   data-error="请输入有效的邮箱地址"
+                                   id="email">
+                            <span class="ie8 icon-close close hide"></span>
+                            <label class="icon-sucessfill blank hide"></label>
+                            <label class="focus">请输入有效的邮箱地址</label>
+                            <label class="focus valid"></label>
+                        </div>
+                    </div>
+                    <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl"><b
+                                class="ftx04">*</b>人机验证：</span>
+                        <div class="f-fl item-ifo">
+                            <input type="text" maxlength="4"
+                                   class="txt03 f-r3 f-fl required"
+                                   tabindex="4" style="width:167px"
+                                   id="randCode"
+                                   data-valid="isNonEmpty"
+                                   required="required"
+                                   data-error="验证码不能为空">
+                            <span class="ie8 icon-close close hide"></span>
+                            <label class="f-size12 c-999 f-fl f-pl10">
+                                <img id="captchaImage" alt="验证码"
+                                     style="height: 30px; width: auto;">
+                            </label>
+                            <label class="icon-sucessfill blank hide"
+                                   style="left:380px"></label>
+                            <label class="focusa">看不清？<a
+                                    href="javascript:generateCaptcha();"
+                                    class="c-blue"
+                                    id="changeCaptcha">换一张</a></label>
+                            <label class="focus valid"
+                                   style="left:370px"></label>
+                        </div>
+                    </div>
+                    <div class="item col-xs-11">
+                        <span class="intelligent-label f-fl">&nbsp;</span>
+                        <div class="f-fl item-ifo">
+                            <a href="javascript:validateFormPart1();"
+                               class="btn btn-blue f-r3"
+                               id="btn_part1">下一步</a>
+                        </div>
+                        <div id="messageBox" class="message-box"
+                             style="display:none; font-size: 15px; font-family: 'KaiTi'; color: red; margin-top: 15px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="part2" style="display:none">
+                    <div class="alert alert-info" style="width:700px">
+                        请点击下方按钮，完成邮箱验证。
+                    </div>
+                    <div class="item col-xs-12 f-mb10"
+                         style="height:auto">
+                        <span class="intelligent-label f-fl"></span>
+                    </div>
+                    <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl"><b
+                                class="ftx04">*</b>验证码：</span>
+                        <div class="f-fl item-ifo">
+                            <input type="text" maxlength="6"
+                                   id="verifyNo"
+                                   class="txt03 f-r3 f-fl required"
+                                   tabindex="4" style="width:167px"
+                                   data-valid="isNonEmpty||isInt"
+                                   required="required"
+                                   data-error="验证码不能为空||请输入6位数字验证码">
+                            <span class="btn btn-gray f-r3 f-ml5 f-size13"
+                                  id="verifyYz">发送验证码</span>
+                        </div>
+                    </div>
+                    <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl">&nbsp;</span>
+                        <div class="f-fl item-ifo">
+                            <a href="javascript:verifyEmail();"
+                               class="btn btn-blue f-r3"
+                               id="btn_part2">下一步</a>
+                        </div>
+                    </div>
+                    <div id="time_box" style="display:none;">重新发送
+                        (3:00)
+                    </div>
+                </div>
+                <div class="part3" style="display:none">
+                    <div class="alert alert-success"
+                         style="width:700px">
+                        注册成功！
+                    </div>
+                    <div class="item col-xs-12 f-mb10"
+                         style="height:auto">
+                        <span class="intelligent-label f-fl"></span>
+                    </div>
+                    <div class="item col-xs-12">
+                        <span class="intelligent-label f-fl">&nbsp;</span>
+                        <div class="f-fl item-ifo">
+                            <a href="/index" class="btn btn-blue f-r3"
+                               id="btn_part3">返回首页</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="m-sPopBg" style="z-index:998;"></div>
+
+<script>
+    function setCookie(name, value, min) {
+        const date = new Date();
+        date.setTime(date.getTime() + (min * 60 * 1000));
+        const expires = "expires=" + date.toUTCString();
+        document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    }
+
+    function getCookie(name) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+    // 1.生成人机验证码（对）
+    function generateCaptcha() {
+        const captcha = Math.random().toString(36).substring(2, 6).toUpperCase();
+        window.captcha = captcha;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 40;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#f0f0f0';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.font = '28px Arial';
+        ctx.fillStyle = '#000';
+        ctx.fillText(captcha, 10, 30);
+
+        for (let i = 0; i < 5; i++) {
+            ctx.beginPath();
+            ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+            ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+            ctx.strokeStyle = `rgba(0, 0, 0, ${Math.random()})`;
+            ctx.stroke();
+        }
+
+        const captchaImageSrc = canvas.toDataURL();
+        document.getElementById('captchaImage').src = captchaImageSrc;
+
+        sessionStorage.setItem('captcha', captcha);
+    }
+
+    // 2.初始化人机验证码（对）
+    generateCaptcha();
+
+    // 3.人机验证码验证（对）
+    function verifyCaptcha() {
+        const inputCaptcha = document.getElementById('randCode').value;
+        const storedCaptcha = sessionStorage.getItem('captcha');
+        if (inputCaptcha === storedCaptcha) {
+            return true;
+        } else {
+            showMessage('验证码错误！');
+            return false;
+        }
+    }
+
+    // 4.显示系统提示信息函数（对）
+    function showMessage(message) {
+        const messageBox = document.getElementById('messageBox');
+        messageBox.style.display = 'block';
+        messageBox.textContent = message;
+
+        setTimeout(() => {
+            messageBox.style.display = 'none';
+        }, 3000);
+    }
+
+    // 表单验证函数
+    function validateFormPart1() {
+        const adminNo = document.getElementById('adminNo').value;
+        const password = document.getElementById('password').value;
+        const rePassword = document.getElementById('rePassword').value;
+        const email = document.getElementById('email').value;
+        const randCode = document.getElementById('randCode').value;
+        const gender = document.getElementById('gender').value;
+        const age = document.getElementById('age').value;
+
+        // 用户名校验
+        if (adminNo.length === 0) {
+            return showMessage('用户名不能为空');
+        }
+        if (!adminNo.match(/^[a-zA-Z\u4e00-\u9fa5][a-zA-Z0-9\u4e00-\u9fa5_]{3,19}$/)) {
+            return showMessage('用户名格式不正确');
+        }
+
+        // 密码校验
+        if (password.length !== 8) {
+            return showMessage('密码长度必须为8位！');
+        }
+
+        // 确认密码校验
+        if (rePassword !== password) {
+            return showMessage('两次输入的密码不一致！');
+        }
+
+        // 邮箱校验
+        if (email.length === 0) {
+            return showMessage('邮箱不能为空！');
+        }
+        if (!email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
+            return showMessage('邮箱格式不正确！');
+        }
+
+        // 性别校验
+        if (gender && gender !== '男' && gender !== '女') {
+            return showMessage('性别选择无效');
+        }
+
+        // 年龄校验
+        if (age && (age < 0 || age > 120)) {
+            return showMessage('年龄应在0到120之间');
+        }
+
+        // 验证码校验
+        if (randCode.length === 0) {
+            return showMessage('验证码不能为空');
+        }
+        if (!verifyCaptcha()) {
+            return false;
+        }
+
+        // 获取以上数据，封装成 JSON 对象，传递给后端。
+        const userData = {
+            username: adminNo,
+            password: password,
+            email: email,
+            gender: gender,
+            age: age
+        };
+
+        $.ajax({
+            url: '/normalUser/register',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(userData),
+            success: function (response) {
+                setCookie('newUserId', response.newUserId, 5); // 存储到 Cookie，有效期5min
+                // 注册成功后的处理逻辑
+                $('.part1').hide();
+                $('.part2').show();
+                updateStep(1);// 将 newUserId 存储到全局变量中
+            },
+            error: function (xhr, status, error) {
+                alert(xhr.responseJSON ? xhr.responseJSON : '注册失败: ' + error);
+            }
+        });
+    }
+
+    function updateStep(step) {
+        $(".step li").removeClass("on");
+        $(".step li").eq(step).addClass("on");
+    }
+
+    $(function () {
+        // 第二页的确定按钮
+        $("#btn_part2").click(function (event) {
+            // 阻止表单的默认提交行为
+            event.preventDefault();
+
+            function validateFormPart2(form) {
+                let isValid = true;
+                form.find('.required').each(function () {
+                    const input = $(this);
+                    const value = input.val().trim();
+                    const errors = input.data('error').split('||');
+                    const validRules = input.data('valid').split('||');
+
+                    for (let i = 0; i < validRules.length; i++) {
+                        const rule = validRules[i].split(':');
+                        switch (rule[0]) {
+                            case 'isNonEmpty':
+                                if (value === '') {
+                                    showMessage(errors[i]);
+                                    isValid = false;
+                                    return false;
+                                }
+                                break;
+                            case 'isInt':
+                                if (!/^\d{6}$/.test(value)) {
+                                    showMessage(errors[i]);
+                                    isValid = false;
+                                    return false;
+                                }
+                                break;
+                        }
+                    }
+                });
+
+                return isValid;
+            }
+
+            if (!validateFormPart2($('#part2'))) return;
+
+            const verifyNo = $('#verifyNo').val();
+            const email = $('#email').val();
+            $.ajax({
+                url: '/mail/verify',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    email: email,
+                    verificationCode: verifyNo
+                }),
+                success: function (response) {
+                    if (response.success) {
+                        $('.part2').hide();
+                        $('.part3').show();
+                        //在这里编写一个函数，用来激活刚才的注册用户。
+                        updateStep(2);
+                    } else {
+                        activateAccount();
+                        showMessage('验证码验证失败，请重试');
+                    }
+                },
+                error: function () {
+                    showMessage('验证码验证失败，请重试');
+                }
+            });
+        });
+
+        // 更新进度条的函数
+        function updateStep(step) {
+            $(".step li").removeClass("on");
+            $(".step li").eq(step).addClass("on");
+        }
+
+        // 绑定发送验证码按钮的点击事件
+        $("#verifyYz").click(function () {
+            // 获取输入框中的邮箱地址
+            const email = $("#email").val();
+            // 检查邮箱地址是否为空
+            if (!email || email.trim() === "") {
+                alert("请输入邮箱地址！");
+                return;
+            }
+
+            // 发送 AJAX 请求给后端
+            $.ajax({
+                url: "/mail/send",
+                type: "POST",
+                data: JSON.stringify({email: email}), // 注意这里的数据格式
+                contentType: "application/json", // 设置请求头
+                success: function (response) {
+                    if (response.success) {
+                        alert("验证码已发送，请查收邮件！");
+                        startCountdown(); // 开始倒计时
+                    } else {
+                        alert("验证码发送失败，请稍后再试！");
+                    }
+                },
+                error: function () {
+                    alert("请求失败，请检查网络连接或稍后再试！");
+                }
+            });
+        });
+
+        // 倒计时函数
+        function startCountdown() {
+            let timeLeft = 60;
+            const countdownInterval = setInterval(function () {
+                const timeDisplay = document.getElementById("time_box");
+                timeDisplay.style.display = "inline";
+                timeDisplay.innerHTML = "重新发送 (" + (Math.floor(timeLeft / 60) + ":" + (timeLeft % 60 < 10 ? '0' : '') + (timeLeft % 60)) + ")";
+
+                if (--timeLeft < 0) {
+                    clearInterval(countdownInterval);
+                    timeDisplay.style.display = "none";
+                    $("#verifyYz").removeAttr("disabled"); // 取消按钮禁用状态
+                } else {
+                    $("#verifyYz").attr("disabled", "disabled"); // 禁用按钮
+                }
+            }, 1000);
+        }
+    });
+    function activateAccount() {
+        const newUserId = getCookie('newUserId'); // 从 sessionStorage 获取 newUserId
+        if (newUserId) {
+            $.ajax({
+                url: '/normalUser/activeById/' + newUserId,
+                type: 'POST',
+                success: function (response) {
+                    if (response.message === '激活成功！') {
+                        alert('账户激活成功！');
+                    } else {
+                        alert('账户激活失败！');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('激活失败: ' + error);
+                }
+            });
+        } else {
+            alert('新用户ID未获取到，请先注册用户。');
+        }
+    }
+</script>
+
+
+</body>
+</html>
+

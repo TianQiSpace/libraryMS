@@ -1,0 +1,57 @@
+spring:
+  config:
+    import: "classpath:/config/businessConfig.yml"
+  main:
+    lazy-initialization: true
+  mail:
+    #smtp服务主机  qq邮箱则为smtp.qq.com;163邮箱是smtp.163.com
+    host: smtp.qq.com
+    #服务协议
+    protocol: smtp
+    # 编码集
+    default-encoding: UTF-8
+    #发送邮件的账户
+    username: 615861186@qq.com
+    #端口
+    port: 465
+    #授权码
+    password: gpgfvnyoehsybecd
+    test-connection: true
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+  web:
+    resources:
+      # 开启静态资源映射
+      add-mappings: true
+      # 设置静态资源位置，可以设置多个:
+      static-locations: classpath:/static/
+  application:
+    name: libraryMS
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/library_database?useUnicode=true&characterEncoding=utf-8&&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: anquse22
+  session:
+    # session过期日期:1天
+    timeout: 86400
+  thymeleaf:
+    mode: HTML
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+    encoding: UTF-8
+    enabled: true # 是否开启模板引擎
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      logic-delete-field: status # 全局逻辑删除字段名
+      logic-delete-value: 1 # 逻辑已删除值
+      logic-not-delete-value: 0 # 逻辑未删除值
+
